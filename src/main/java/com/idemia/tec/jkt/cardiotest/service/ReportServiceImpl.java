@@ -1006,6 +1006,32 @@ public class ReportServiceImpl implements ReportService {
 
         }
 
+        /*
+        // HSA
+        if (runSettings.getFileManagement2().isIncludeHighStressAreaTest()) {
+            html.append("\n<div><h2>File Management 2</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+
+            if (runSettings.getFileManagement2().isIncludeHighStressAreaTest()) {
+
+                html.append(createTableHeaderModule());
+                html.append("\n<tr><td class=\"item\">High Stress Area Test</td>");
+
+                if (runSettings.getFileManagement2().isTestHighStressAreaOk())
+                    html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getFileManagement2().getTestHighStressAreaMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">High Stress Area Test</td><td>(not included)</td></tr>");
+
+            html.append(createTableFooter());
+
+        }
+         */
+
+
         html.append(createDocumentFooter());
         return html;
     }

@@ -22,6 +22,7 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
 
     //-------------------
     @Autowired private FileManagementService fileManagementService;
+    @Autowired private FileManagement2Service fileManagement2Service;
     //-------------------
 
     @Override public StringBuilder generateAtr() {
@@ -163,6 +164,10 @@ public class ScriptGeneratorServiceImpl implements ScriptGeneratorService {
 
     @Override public StringBuilder generateFilemanagementSfi(FileManagement fileManagement) {
         return fileManagementService.generateFilemanagementSfi(fileManagement);
+    }
+
+    @Override public StringBuilder generateFilemanagement2HighStressArea(FileManagement2 fileManagement2) {
+        return fileManagement2Service.generateFilemanagement2HighStressArea(fileManagement2);
     }
     //-------------------
 

@@ -79,9 +79,15 @@ public class RunServiceImpl implements RunService {
             runAllBuffer.append(addAuthentication(root.getRunSettings().getAuthentication()));
 
         //-------------------
+
         // file management
         if (root.getRunSettings().getFileManagement().isIncludeLinkFilesTest() || root.getRunSettings().getFileManagement().isIncludeRuwiTest() || root.getRunSettings().getFileManagement().isIncludeSfiTest()  )
             runAllBuffer.append(addFileManagement(root.getRunSettings().getFileManagement()));
+
+        // HSA
+        if (root.getRunSettings().getFileManagement2().isIncludeHighStressAreaTest() )
+            runAllBuffer.append(addFileManagement2(root.getRunSettings().getFileManagement2()));
+
         //-------------------
 
         // custom scripts section 2
@@ -484,6 +490,24 @@ public class RunServiceImpl implements RunService {
 
         return flmngmtRunAllString.toString();
     }
+
+    private String addFileManagement2(FileManagement2 fileManagement2) {
+
+        StringBuilder flmngmt2RunAllString = new StringBuilder();
+        flmngmt2RunAllString.append("; File Management 2\n");
+
+        // add link file script to structure
+        if (fileManagement2.isIncludeHighStressAreaTest()) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(scriptsDirectory + "HighStressArea.txt"))) {
+                bw.append(scriptGenerator.generateFilemanagement2HighStressArea(fileManagement2));
+            }
+            catch (IOException e) { logger.error("Failed writing HighStressArea script"); }
+            flmngmt2RunAllString.append(".EXECUTE scripts\\HighStressArea.txt /PATH logs\n");
+            flmngmt2RunAllString.append(".ALLUNDEFINE\n\n");
+        }
+
+        return flmngmt2RunAllString.toString();
+    }
     // ----------------------
 
     private String addRam(Ram ram) {
@@ -716,6 +740,12 @@ public class RunServiceImpl implements RunService {
     @Override public boolean runSfiTest() {
         composeScripts();
         runShellCommand("pcomconsole", scriptsDirectory + "FileManagement_SFI_TEST.txt");
+        return exitVal == 0;
+    }
+
+    @Override public boolean runHighStressAreaTest() {
+        composeScripts();
+        runShellCommand("pcomconsole", scriptsDirectory + "HighStressArea.txt");
         return exitVal == 0;
     }
     // ------------------------------

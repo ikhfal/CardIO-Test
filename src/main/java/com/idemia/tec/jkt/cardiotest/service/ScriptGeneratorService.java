@@ -41,6 +41,8 @@ public interface ScriptGeneratorService {
         StringBuilder generateFilemanagementRuWI01_OK_To_Go(FileManagement fileManagement);
         StringBuilder generateFilemanagementRuWI02_Method(FileManagement fileManagement);
     StringBuilder generateFilemanagementSfi(FileManagement fileManagement);
+
+    StringBuilder generateFilemanagement2HighStressArea(FileManagement2 fileManagement2);
     // ------------------------------------------------
 
 }

@@ -124,6 +124,8 @@ public class CardiotestController {
 
     //----------------------------------
     @Autowired private FileManagementController fileManagementController;
+
+    @Autowired private FileManagement2Controller fileManagement2Controller;
     //----------------------------------
 
     public CardiotestController() {}
@@ -693,6 +695,9 @@ public class CardiotestController {
 
         // file management settings
         fileManagementController.saveControlState();
+
+        // file management settings
+        fileManagement2Controller.saveControlState();
 
     }
 

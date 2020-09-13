@@ -34,6 +34,8 @@ public class RunSettings {
     private FileManagement fileManagement;
     private FMLinkFiles fMLinkFiles;
     private FMRuwi fMRuwi;
+    private FileManagement2 fileManagement2;
+    private FM2HighStressArea FM2HighStressArea;
 
 
     public RunSettings() { }
@@ -45,7 +47,7 @@ public class RunSettings {
                        CardParameters cardParameters, Authentication authentication, List<SCP80Keyset> scp80Keysets,
                        SmsUpdate smsUpdate, RfmUsim rfmUsim, RfmGsm rfmGsm, RfmIsim rfmIsim, RfmCustom rfmCustom,
                        Ram ram, List<CustomScript> customScriptsSection1, List<CustomScript> customScriptsSection2,
-                       List<CustomScript> customScriptsSection3, FileManagement fileManagement, FMLinkFiles fMLinkFiles, FMRuwi fMRuwi) {
+                       List<CustomScript> customScriptsSection3, FileManagement fileManagement, FMLinkFiles fMLinkFiles, FMRuwi fMRuwi,FileManagement2 fileManagement2, FM2HighStressArea FM2HighStressArea) {
 
         this.projectPath = projectPath;
         this.advSaveVariablesPath = advSaveVariablesPath;
@@ -77,7 +79,8 @@ public class RunSettings {
         this.fileManagement = fileManagement;
         this.fMLinkFiles = fMLinkFiles;
         this.fMRuwi = fMRuwi;
-
+        this.fileManagement2 = fileManagement2;
+        this.FM2HighStressArea = FM2HighStressArea;
     }
 
     public String getProjectPath() {
@@ -319,5 +322,21 @@ public class RunSettings {
 
     public void setfMRuwi(FMRuwi fMRuwi) {
         this.fMRuwi = fMRuwi;
+    }
+
+    public FM2HighStressArea getHighStressArea() {
+        return FM2HighStressArea;
+    }
+
+    public void setHighStressArea(FM2HighStressArea FM2HighStressArea) {
+        this.FM2HighStressArea = FM2HighStressArea;
+    }
+
+    public FileManagement2 getFileManagement2() {
+        return fileManagement2;
+    }
+
+    public void setFileManagement2(FileManagement2 fileManagement2) {
+        this.fileManagement2 = fileManagement2;
     }
 }

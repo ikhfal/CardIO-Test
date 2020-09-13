@@ -195,6 +195,10 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             // --------------------------------
             FileManagement fileManagement = new FileManagement(true, false, null ,true, false, null,true, false, null,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,0,0,false);
             defaultSettings.setFileManagement(fileManagement);
+
+            FileManagement2 fileManagement2 = new FileManagement2(false,false,null,0);
+            defaultSettings.setFileManagement2(fileManagement2);
+
             // --------------------------------
 
             ObjectMapper mapper = new ObjectMapper();

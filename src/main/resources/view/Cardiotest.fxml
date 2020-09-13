@@ -434,6 +434,11 @@
                                 <fx:include source="CustomTest.fxml" />
                               </content>
                             </Tab>
+                            <Tab closable="false" text="High Stress Area">
+                              <content>
+                                <fx:include source="HighStressArea.fxml" />
+                              </content>
+                            </Tab>
                           </tabs>
                         </TabPane>
                       </children>

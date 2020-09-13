@@ -6,7 +6,6 @@ public class FMRuwi {
 
     private SimpleStringProperty path_Ruwi;
 
-
     public FMRuwi() {}
 
     public FMRuwi(String path_Ruwi) {

@@ -31,6 +31,8 @@ public interface RunService {
     boolean runLinkFilesTest();
     boolean runRuwiTest();
     boolean runSfiTest();
+
+    boolean runHighStressAreaTest();
     // --------
 
 

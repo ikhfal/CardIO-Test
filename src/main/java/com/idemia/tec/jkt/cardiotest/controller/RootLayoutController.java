@@ -55,6 +55,8 @@ public class RootLayoutController {
     private boolean runLinkFilesTestOk;
     private boolean runRuwiTestOk;
     private boolean runSfiTestOk;
+
+    private boolean runHighStressAreaTestOk;
     // --------------------
 
     private boolean runSqnMaxOk;
@@ -92,6 +94,8 @@ public class RootLayoutController {
     @Autowired private ExportImportService eximService;
     //-------------
     @Autowired private FileManagementController fileManagementController;
+
+    @Autowired private FileManagement2Controller fileManagement2Controller;
     //-------------
     @FXML private BorderPane rootBorderPane;
     @FXML private MenuBar menuBar;
@@ -120,6 +124,8 @@ public class RootLayoutController {
     @FXML private MenuItem menuLinkFiles;
     @FXML private MenuItem menuRuwi;
     @FXML private MenuItem menuSfi;
+
+    @FXML private MenuItem menuHighStressArea;
     //-------------
 
     private StatusBar appStatusBar;
@@ -1086,6 +1092,54 @@ public class RootLayoutController {
         Thread runSfiTestThread = new Thread(task);
         runSfiTestThread.start();
     }
+
+    @FXML private void handleMenuHighStressAreaTest() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing HighStressArea. Please wait..");
+        cardiotest.getMaskerPane().setVisible(true); // display masker pane
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing HighStressArea..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runHighStressAreaTestOk = runService.runHighStressAreaTest();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // dismiss masker pane
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runHighStressAreaTestOk) {
+                    appStatusBar.setText("Executed HighStressArea: OK");
+                    Notifications.create().title("CardIO").text("Executed HighStressArea: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed HighStressArea: NOK");
+                    Notifications.create().title("CardIO").text("Executed HighStressArea: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\HighStressArea.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runHighStressAreaTestThread = new Thread(task);
+        runHighStressAreaTestThread.start();
+    }
+
     //-------------------------
 
     @FXML private void handleMenuRfmUsim() {
@@ -1954,6 +2008,8 @@ public class RootLayoutController {
     public MenuItem getMenuLinkFile() { return menuLinkFiles; }
     public MenuItem getMenuRuwi() { return menuRuwi; }
     public MenuItem getMenuSfi() { return menuSfi; }
+
+    public MenuItem getMenuHighStressArea() { return menuHighStressArea; }
     //-------------------------
 
     public void setImportProjectDir(File importProjectDir) { this.importProjectDir = importProjectDir; }
