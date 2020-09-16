@@ -33,7 +33,7 @@
                         <MenuItem fx:id="menuSfi" mnemonicParsing="false" onAction="#handleMenuSfiTest" text="SFI Check" />
                         <MenuItem fx:id="menuRfmUsim" mnemonicParsing="false" onAction="#handleMenuRfmUsim" text="RFM USIM" />
                         <MenuItem fx:id="menuRfmUsimUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmUsimUpdateRecord" text="RFM USIM Update Record" />
-                        <MenuItem fx:id="menuRfmUsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmUsimExpandedMode" text="RFM USIM Expanded Mode>" />
+                        <MenuItem fx:id="menuRfmUsimExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmUsimExpandedMode" text="RFM USIM Expanded Mode&gt;" />
                         <MenuItem fx:id="menuRfmGsm" mnemonicParsing="false" onAction="#handleMenuRfmGsm" text="RFM GSM" />
                         <MenuItem fx:id="menuRfmGsmUpdateRecord" mnemonicParsing="false" onAction="#handleMenuRfmGsmUpdateRecord" text="RFM GSM Update Record" />
                         <MenuItem fx:id="menuRfmGsmExpandedMode" mnemonicParsing="false" onAction="#handleMenuRfmGsmExpandedMode" text="RFM GSM Expanded Mode" />
@@ -63,7 +63,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem disable="true" mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleMenuAbout" text="About" />
                     </items>
                 </Menu>
             </menus>

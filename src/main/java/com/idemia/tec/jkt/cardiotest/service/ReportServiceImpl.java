@@ -954,20 +954,14 @@ public class ReportServiceImpl implements ReportService {
             }
             html.append(createTableFooter());
         }
-        html.append("\n<div><h2>Other Tests</h2></div>");
-        if (runSettings.getCustomScriptsSection1().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection1());
-        if (runSettings.getCustomScriptsSection2().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection2());
-        if (runSettings.getCustomScriptsSection3().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection3());
 
         // file management
         if (runSettings.getFileManagement().isIncludeLinkFilesTest() || runSettings.getFileManagement().isIncludeRuwiTest() || runSettings.getFileManagement().isIncludeSfiTest()) {
             html.append("\n<div><h2>File Management</h2></div>");
             html.append("\n<div><h3>Test modules</h3></div>");
-
+            html.append(createTableHeaderModule());
 
             if (runSettings.getFileManagement().isIncludeLinkFilesTest()) {
-
-                html.append(createTableHeaderModule());
                 html.append("\n<tr><td class=\"item\">Link File Test</td>");
                 if (runSettings.getFileManagement().isTestLinkFilesOk())
                     html.append("<td class=\"ok\">PASSED</td></tr>");
@@ -980,30 +974,24 @@ public class ReportServiceImpl implements ReportService {
 
             if (runSettings.getFileManagement().isIncludeRuwiTest()) {
                 html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td>");
-
                 if (runSettings.getFileManagement().isTestRuwiOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getFileManagement().getTestRuwiMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
-
             }
             else html.append("\n<tr><td class=\"item\">Readable & Updateable when Invalidated</td><td>(not included)</td></tr>");
-            
+
             if (runSettings.getFileManagement().isIncludeSfiTest()) {
                 html.append("\n<tr><td class=\"item\">SFI TEST</td>");
-
                 if (runSettings.getFileManagement().isTestSfiOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
                 else {
                     String[] messages = runSettings.getFileManagement().getTestSfiMessage().split(";");
                     html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
                 }
-
             }
             else html.append("\n<tr><td class=\"item\">SFI Check</td><td>(not included)</td></tr>");
-
             html.append(createTableFooter());
-
         }
 
         /*
@@ -1031,6 +1019,10 @@ public class ReportServiceImpl implements ReportService {
         }
          */
 
+        html.append("\n<div><h2>Other Tests</h2></div>");
+        if (runSettings.getCustomScriptsSection1().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection1());
+        if (runSettings.getCustomScriptsSection2().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection2());
+        if (runSettings.getCustomScriptsSection3().size() > 0) printCustomScriptsReport(html, runSettings.getCustomScriptsSection3());
 
         html.append(createDocumentFooter());
         return html;
@@ -1271,6 +1263,18 @@ public class ReportServiceImpl implements ReportService {
         }
         if (runSettings.getSecretCodes().isInclude2gScript()) {
             if (runSettings.getSecretCodes().isTestCodes2gOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getFileManagement().isIncludeLinkFilesTest()) {
+            if (runSettings.getFileManagement().isTestLinkFilesOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getFileManagement().isIncludeRuwiTest()) {
+            if (runSettings.getFileManagement().isTestRuwiOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getFileManagement().isIncludeSfiTest()) {
+            if (runSettings.getFileManagement().isTestSfiOk()) testPass++;
             else testFail++;
         }
         if (runSettings.getCustomScriptsSection1().size() > 0) {

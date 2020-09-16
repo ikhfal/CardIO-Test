@@ -27,7 +27,6 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             }
         }
         else {
-
             // constants for default values
             String PROJECT_PATH_DEFAULT = "C:\\";
             String ADV_SAVE_VAR_DEFAULT = "variables.txt";
@@ -76,8 +75,6 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             cardParameters.setDfCsim("7FF3");
             cardParameters.setIccid("ICCID");
             defaultSettings.setCardParameters(cardParameters);
-
-
 
             Authentication authentication = new Authentication();
             authentication.setIncludeDeltaTest(true);
@@ -152,7 +149,6 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             rfmIsim.setMinimumSecurityLevel(rfmIsimMsl);
             defaultSettings.setRfmIsim(rfmIsim);
 
-
             MinimumSecurityLevel ramMsl = new MinimumSecurityLevel(true, "Cryptographic Checksum", "Counter must be higher");
             ramMsl.setCipherAlgo("3DES - CBC 2 keys");ramMsl.setSigningAlgo("3DES - CBC 2 keys");
             ramMsl.setPorRequirement("PoR required");
@@ -192,14 +188,12 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setRfmCustom(rfmCustom);
             rfmCustom.setCustomRfmDesc("RFM ...");
 
-            // --------------------------------
             FileManagement fileManagement = new FileManagement(true, false, null ,true, false, null,true, false, null,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,0,0,false);
             defaultSettings.setFileManagement(fileManagement);
 
             FileManagement2 fileManagement2 = new FileManagement2(false,false,null,0);
             defaultSettings.setFileManagement2(fileManagement2);
 
-            // --------------------------------
 
             ObjectMapper mapper = new ObjectMapper();
             try {

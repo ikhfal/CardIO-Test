@@ -102,6 +102,21 @@
 			<artifactId>fontawesomefx</artifactId>
 			<version>8.9</version>
 		</dependency>
+		<dependency>
+			<groupId>com.imperva.ddc</groupId>
+			<artifactId>ddc-service</artifactId>
+			<version>7.4.0.0.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.12</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.markusbernhardt</groupId>
+			<artifactId>proxy-vole</artifactId>
+			<version>1.0.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>
