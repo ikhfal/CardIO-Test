@@ -672,7 +672,110 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
-        // TODO RFM CUSTOM Generate Report
+        // RFM CUSTOM
+        if (runSettings.getRfmCustom().isIncludeRfmCustom() || runSettings.getRfmCustom().isIncludeRfmCustomUpdateRecord() || runSettings.getRfmCustom().isIncludeRfmCustomExpandedMode()) {
+            html.append("\n<div><h2>RFM CUSTOM</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+            if (runSettings.getRfmCustom().isIncludeRfmCustom()) {
+                html.append("\n<tr><td class=\"item\">RFM CUSTOM</td>");
+                if (runSettings.getRfmCustom().isTestRfmCustomOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmCustom().getTestRfmCustomMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM CUSTOM</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmCustom().isIncludeRfmCustomUpdateRecord()) {
+                html.append("\n<tr><td class=\"item\">RFM CUSTOM update record</td>");
+                if (runSettings.getRfmCustom().isTestRfmCustomUpdateRecordOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmCustom().getTestRfmCustomUpdateRecordMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM CUSTOM update record</td><td>(not included)</td></tr>");
+            if (runSettings.getRfmCustom().isIncludeRfmCustomExpandedMode()) {
+                html.append("\n<tr><td class=\"item\">RFM CUSTOM expanded mode</td>");
+                if (runSettings.getRfmCustom().isTestRfmCustomExpandedModeOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+                else {
+                    String[] messages = runSettings.getRfmCustom().getTestRfmCustomExpandedModeMessage().split(";");
+                    html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+                }
+            }
+            else html.append("\n<tr><td class=\"item\">RFM CUSTOM expanded mode</td><td>(not included)</td></tr>");
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Test parameters</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                    "\n<tr><td class=\"item\">TAR</td>"
+                            + "<td>" + runSettings.getRfmCustom().getTar() + "</td></tr>"
+            );
+            if (runSettings.getRfmCustom().isFullAccess()) {
+                html.append(
+                        "\n<tr><td class=\"item\">Target EF</td>"
+                                + "<td>" + runSettings.getRfmCustom().getTargetEf() + "</td></tr>"
+                );
+            }
+            else {
+                html.append(
+                        "\n<tr><td class=\"item\">Target EF</td>"
+                                + "<td>" + runSettings.getRfmCustom().getCustomTargetEf() + "&nbsp;(" + runSettings.getRfmCustom().getCustomTargetAcc() + ")</td></tr>"
+                                + "\n<tr><td class=\"item\">Target EF (negative case)</td>"
+                                + "<td>" + runSettings.getRfmCustom().getCustomTargetEfBadCase() + "&nbsp;(" + runSettings.getRfmCustom().getCustomTargetAccBadCase() + ")</td></tr>"
+                        // TODO RFM CUSTOM Generate Report for not Full Access use Access Domain
+                );
+            }
+            if (runSettings.getRfmCustom().isUseSpecificKeyset()) {
+                html.append(
+                        "\n<tr><td class=\"item\">Specific cipher keyset</td>"
+                                + "<td>" + runSettings.getRfmCustom().getCipheringKeyset().getKeysetName() + "</td></tr>"
+                                + "\n<tr><td class=\"item\">Specific auth keyset</td>"
+                                + "<td>" + runSettings.getRfmCustom().getAuthKeyset().getKeysetName() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Minimum Security Level</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                    "\n<tr><td class=\"item\">Computed MSL</td>"
+                            + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getComputedMsl() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Use cipher</td>");
+            if (runSettings.getRfmCustom().getMinimumSecurityLevel().isUseCipher()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(
+                    "\n<tr><td class=\"item\">Cipher algo</td>"
+                            + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getCipherAlgo() + "</td></tr>"
+            );
+            html.append(
+                    "\n<tr><td class=\"item\">Auth verification</td>"
+                            + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getAuthVerification() + "</td></tr>"
+            );
+            html.append(
+                    "\n<tr><td class=\"item\">Signing algo</td>"
+                            + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getSigningAlgo() + "</td></tr>"
+            );
+            html.append(
+                    "\n<tr><td class=\"item\">Counter checking</td>"
+                            + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getCounterChecking() + "</td></tr>"
+            );
+            html.append(
+                    "\n<tr><td class=\"item\">PoR requirement</td>"
+                            + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getPorRequirement() + "</td></tr>"
+            );
+            html.append(
+                    "\n<tr><td class=\"item\">PoR security</td>"
+                            + "<td>" + runSettings.getRfmCustom().getMinimumSecurityLevel().getPorSecurity() + "</td></tr>"
+            );
+            html.append("\n<tr><td class=\"item\">Cipher PoR</td>");
+            if (runSettings.getRfmCustom().getMinimumSecurityLevel().isCipherPor()) html.append("<td>YES</td></tr>");
+            else html.append("<td>NO</td></tr>");
+            html.append(createTableFooter());
+        }
+
 
         // RAM
         if (runSettings.getRam().isIncludeRam() || runSettings.getRam().isIncludeRamUpdateRecord() || runSettings.getRam().isIncludeRamExpandedMode()) {
