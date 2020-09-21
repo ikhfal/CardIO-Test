@@ -5,6 +5,7 @@ public class Ram {
     private boolean includeRam;
     private boolean includeRamUpdateRecord;
     private boolean includeRamExpandedMode;
+    private boolean includeVerifGp;
     private String tar;
     private boolean useSpecificKeyset;
     private SCP80Keyset cipheringKeyset;
@@ -17,15 +18,18 @@ public class Ram {
     private String testRamUpdateRecordMessage;
     private boolean testRamExpandedModeOk;
     private String testRamExpandedModeMessage;
+    private boolean testVerifGpOk;
+    private String testVerifGpMessage;
 
     public Ram() {}
 
     public Ram(boolean includeRam, boolean includeRamUpdateRecord, boolean includeRamExpandedMode,
                String tar, boolean useSpecificKeyset, SCP80Keyset cipheringKeyset, SCP80Keyset authKeyset,
-               MinimumSecurityLevel minimumSecurityLevel, Isd isdSettings ) {
+               MinimumSecurityLevel minimumSecurityLevel, Isd isdSettings, boolean includeVerifGp ) {
         this.includeRam = includeRam;
         this.includeRamUpdateRecord = includeRamUpdateRecord;
         this.includeRamExpandedMode = includeRamExpandedMode;
+        this.includeVerifGp = includeVerifGp;
         this.tar = tar;
         this.useSpecificKeyset = useSpecificKeyset;
         this.cipheringKeyset = cipheringKeyset;
@@ -56,6 +60,14 @@ public class Ram {
 
     public void setIncludeRamExpandedMode(boolean includeRamExpandedMode) {
         this.includeRamExpandedMode = includeRamExpandedMode;
+    }
+
+    public boolean isIncludeVerifGp() {
+        return includeVerifGp;
+    }
+
+    public void setIncludeVerifGp (boolean includeVerifGp) {
+        this.includeVerifGp = includeVerifGp;
     }
 
     public String getTar() {
@@ -144,6 +156,22 @@ public class Ram {
 
     public void setTestRamExpandedModeMessage(String testRamExpandedModeMessage) {
         this.testRamExpandedModeMessage = testRamExpandedModeMessage;
+    }
+
+    public boolean isTestVerifGpOk() {
+        return testVerifGpOk;
+    }
+
+    public void setTestVerifGpOk(boolean testVerifGpOk) {
+        this.testVerifGpOk = testVerifGpOk;
+    }
+
+    public String getTestVerifGpMessage() {
+        return testVerifGpMessage;
+    }
+
+    public void setTestVerifGpMessage(String testVerifGpMessage) {
+        this.testVerifGpMessage = testVerifGpMessage;
     }
 
     public Isd getIsd() {

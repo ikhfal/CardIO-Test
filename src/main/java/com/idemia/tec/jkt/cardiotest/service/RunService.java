@@ -21,6 +21,7 @@ public interface RunService {
     boolean runRam();
     boolean runRamUpdateRecord();
     boolean runRamExpandedMode();
+    boolean runVerifGp();
     boolean runSecretCodes3g();
     boolean runSecretCodes2g();
     boolean runRfmCustom();

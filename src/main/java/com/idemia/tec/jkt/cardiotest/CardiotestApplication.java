@@ -55,7 +55,7 @@ public class CardiotestApplication extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		BasicConfigurator.configure();
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("CARDIO");
+		this.primaryStage.setTitle("card.io");
 
 
 		/*
@@ -210,7 +210,7 @@ public class CardiotestApplication extends Application {
 
 	public Optional<CardioUser> domainLogin() {
 		Dialog<CardioUser> loginDialog = new Dialog<>();
-		loginDialog.setTitle("CARDIO Login");
+		loginDialog.setTitle("card.io");
 		loginDialog.setHeaderText("Connect with Windows account");
 		loginDialog.setGraphic(new ImageView(this.getClass().getResource("/baseline_login_black_48dp.png").toString()));
 		ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);

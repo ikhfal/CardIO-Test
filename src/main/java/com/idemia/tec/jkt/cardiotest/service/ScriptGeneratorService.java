@@ -28,6 +28,7 @@ public interface ScriptGeneratorService {
     StringBuilder generateRam(Ram ram);
     StringBuilder generateRamUpdateRecord(Ram ram);
     StringBuilder generateRamExpandedMode(Ram ram);
+    StringBuilder generateVerifGp(Ram ram);
     StringBuilder generateSecretCodes2g(SecretCodes secretCodes);
     StringBuilder generateSecretCodes3g(SecretCodes secretCodes);
     StringBuilder generateRfmCustom(RfmCustom rfmCustom);

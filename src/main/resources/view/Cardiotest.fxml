@@ -424,6 +424,60 @@
                                 <fx:include source="Ram.fxml" />
                               </content>
                             </Tab>
+                            <Tab closable="false" text="Verif GP">
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                <children>
+                                  <ScrollPane prefHeight="630.0" prefWidth="1530.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="630.0" prefWidth="1530.0">
+                                        <children>
+                                          <CheckBox fx:id="chkIncludeVerifGp" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleIncludeVerifGp" selected="true" text="Include 'Verif GP'" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0" />
+                                          <TitledPane animated="false" collapsible="false" focusTraversable="false" layoutX="530.0" layoutY="300.0" prefHeight="535.0" prefWidth="1288.0" text="Applet presence" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="46.0">
+                                            <content>
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="514.0" prefWidth="590.0">
+                                                <children>
+                                                  <SplitPane dividerPositions="0.25313479623824453" layoutX="14.0" layoutY="14.0" prefHeight="485.0" prefWidth="1257.0">
+                                                    <items>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="507.0" prefWidth="265.0">
+                                                        <children>
+                                                          <TextField fx:id="packageAidTextField" prefHeight="25.0" prefWidth="300.0" promptText="Package AID" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="14.0" />
+                                                          <TextField fx:id="instanceAidTextField" prefHeight="21.0" prefWidth="300.0" promptText="Instance AID" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="48.0" />
+                                                          <TextField fx:id="lifeCycleTextField" prefHeight="21.0" prefWidth="300.0" promptText="Life Cycle State" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="82.0" />
+                                                          <ButtonBar layoutX="65.0" prefHeight="40.0" prefWidth="162.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="114.0">
+                                                            <buttons>
+                                                              <Button fx:id="addAppletParamButton" mnemonicParsing="false" onAction="#handleButtonAddAppletParam" prefWidth="55.0" text="Add" />
+                                                              <Button fx:id="deleteAppletParamButton" mnemonicParsing="false" onMouseClicked="#handleButtonDeleteAppletParam" prefWidth="55.0" text="Delete" />
+                                                            </buttons>
+                                                          </ButtonBar>
+                                                        </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="486.0" prefWidth="934.0">
+                                                        <children>
+                                                          <TableView fx:id="tblAppletParam" layoutX="20.0" prefHeight="384.0" prefWidth="889.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
+                                                            <columns>
+                                                              <TableColumn fx:id="clmPackage" prefWidth="-1.0" text="Package AID" />
+                                                              <TableColumn fx:id="clmInstance" prefWidth="-1.0" text="Instance AID" />
+                                                              <TableColumn fx:id="clmLifeCycle" prefWidth="-1.0" text="Life Cycle State" />
+                                                            </columns>
+                                                            <columnResizePolicy>
+                                                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                            </columnResizePolicy>
+                                                          </TableView>
+                                                        </children>
+                                                      </AnchorPane>
+                                                    </items>
+                                                  </SplitPane>
+                                                </children>
+                                              </AnchorPane>
+                                            </content>
+                                          </TitledPane>
+                                        </children>
+                                      </AnchorPane>
+                                    </content>
+                                  </ScrollPane>
+                                </children>
+                              </AnchorPane>
+                            </Tab>
                             <Tab closable="false" text="Secret Codes">
                               <content>
                                 <fx:include source="SecretCodes.fxml" />

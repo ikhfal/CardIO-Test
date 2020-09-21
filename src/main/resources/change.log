@@ -1,1 +1,8 @@
-(change log)
+Release 2020.09.21
+- Mapping definitions from advance save variables
+- Configuration of SCP80 keysets
+- Testing modules: authentication, file management, RFM, RAM, verif GP, secret codes
+- Custom tab for other scripts
+- Application login with Windows active directory
+- Generation of report after run all
+- Import & export settings

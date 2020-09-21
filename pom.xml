@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.idemia.tec.jkt</groupId>
 	<artifactId>cardiotest</artifactId>
-	<version>2020.09.03-SNAPSHOT</version>
+	<version>2020.09.21-SNAPSHOT</version>
 	<name>cardiotest</name>
 	<description>TEC test suite</description>
 

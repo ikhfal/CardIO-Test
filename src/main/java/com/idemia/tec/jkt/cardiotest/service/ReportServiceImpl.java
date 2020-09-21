@@ -1,9 +1,6 @@
 package com.idemia.tec.jkt.cardiotest.service;
 
-import com.idemia.tec.jkt.cardiotest.model.CustomScript;
-import com.idemia.tec.jkt.cardiotest.model.RunSettings;
-import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
-import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
+import com.idemia.tec.jkt.cardiotest.model.*;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -788,6 +785,37 @@ public class ReportServiceImpl implements ReportService {
             html.append(createTableFooter());
         }
 
+        // Verif GP
+        if (runSettings.getRam().isIncludeVerifGp()) {
+            html.append("\n<div><h2>Verif GP</h2></div>");
+            html.append("\n<div><h3>Test modules</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append("\n<tr><td class=\"item\">Verif GP</td>");
+            if (runSettings.getRam().isTestVerifGpOk()) html.append("<td class=\"ok\">PASSED</td></tr>");
+            else {
+                String[] messages = runSettings.getRam().getTestVerifGpMessage().split(";");
+                html.append("<td class=\"error\">" + String.join("<br/>", messages) + "</td></tr>");
+            }
+            html.append(createTableFooter());
+
+            html.append("\n<div><h3>Applet parameters</h3></div>");
+            html.append(createTableHeaderModule());
+            html.append(
+                    "\n<tr><td class=\"item\">Package AID</td>"
+                            + "<td class=\"item\">Instance AID</td>"
+                            + "<td class=\"item\">Life Cycle</td></tr>"
+            );
+            for(AppletParam appletParam : runSettings.getAppletParams()) {
+                html.append(
+                        "<tr><td>" + appletParam.getPackageAid() + "</td>"
+                        + "<td>" + appletParam.getInstanceAid() + "</td>"
+                        + "<td>" + appletParam.getLifeCycle() + "</td></tr>"
+                );
+            }
+            html.append(createTableFooter());
+
+        }
+
         // secret codes
         if (runSettings.getSecretCodes().isInclude3gScript() || runSettings.getSecretCodes().isInclude2gScript()) {
             html.append("\n<div><h2>Secret Codes</h2></div>");
@@ -1255,6 +1283,10 @@ public class ReportServiceImpl implements ReportService {
         }
         if (runSettings.getRam().isIncludeRamExpandedMode()) {
             if (runSettings.getRam().isTestRamExpandedModeOk()) testPass++;
+            else testFail++;
+        }
+        if (runSettings.getRam().isIncludeVerifGp()) {
+            if (runSettings.getRam().isTestVerifGpOk()) testPass ++;
             else testFail++;
         }
         if (runSettings.getSecretCodes().isInclude3gScript()) {

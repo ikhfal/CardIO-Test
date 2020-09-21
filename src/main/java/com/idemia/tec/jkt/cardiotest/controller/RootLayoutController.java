@@ -44,6 +44,7 @@ public class RootLayoutController {
     private CardiotestApplication application;
     private TerminalFactory terminalFactory;
     private ObservableList<SCP80Keyset> scp80Keysets = FXCollections.observableArrayList();
+    private ObservableList<AppletParam> appletParams = FXCollections.observableArrayList();
     private ObservableList<CustomScript> customScriptsSection1 = FXCollections.observableArrayList();
     private ObservableList<CustomScript> customScriptsSection2 = FXCollections.observableArrayList();
     private ObservableList<CustomScript> customScriptsSection3 = FXCollections.observableArrayList();
@@ -66,6 +67,7 @@ public class RootLayoutController {
     private boolean runRamOk;
     private boolean runRamUpdateRecordOk;
     private boolean runRamExpandedModeOk;
+    private boolean runVerifGpOk;
     private boolean runRfmCustomOk;
     private boolean runRfmCustomUpdateRecordOk;
     private boolean runRfmCustomExpandedModeOk;
@@ -112,6 +114,7 @@ public class RootLayoutController {
     @FXML private MenuItem menuRam;
     @FXML private MenuItem menuRamUpdateRecord;
     @FXML private MenuItem menuRamExpandedMode;
+    @FXML private MenuItem menuVerifGp;
     @FXML private MenuItem menuCodes3g;
     @FXML private MenuItem menuCodes2g;
     @FXML private MenuItem menuLinkFiles;
@@ -202,6 +205,7 @@ public class RootLayoutController {
         cardiotest.saveControlState();
         runSettings.setVariableMappings(application.getMappings());
         runSettings.setScp80Keysets(scp80Keysets);
+        runSettings.setAppletParams(appletParams);
         runSettings.setCustomScriptsSection1(customScriptsSection1);
         runSettings.setCustomScriptsSection2(customScriptsSection2);
         runSettings.setCustomScriptsSection3(customScriptsSection3);
@@ -247,6 +251,7 @@ public class RootLayoutController {
         cardiotest.getCmbMccVar().getItems().clear();
         cardiotest.getMappedVariables().clear();
         scp80Keysets.clear();
+        appletParams.clear();
         customScriptsSection1.clear();
         customScriptsSection2.clear();
         customScriptsSection3.clear();
@@ -350,8 +355,7 @@ public class RootLayoutController {
                     reportService.createReportFromSettings(runSettings);
                     cardiotest.getTxtCommandResponse().clear();
                     cardiotest.getTabBottom().getSelectionModel().select(0);
-                }
-                else {
+                } else {
                     appStatusBar.setText(tsResponse.getMessage());
                     Notifications.create().title("CardIO").text(tsResponse.getMessage()).showError();
                     logger.error(tsResponse.getMessage());
@@ -624,6 +628,21 @@ public class RootLayoutController {
                 runSettings.getRam().setTestRamExpandedModeOk(false);
                 errFailure += module.getFailure().replace("\n", ";");
                 runSettings.getRam().setTestRamExpandedModeMessage(errFailure);
+            }
+        }
+        if (module.getName().equals("Verif_GP")) {
+            runSettings.getRam().setTestVerifGpOk(true);
+            runSettings.getRam().setTestVerifGpMessage("OK");
+            String errFailure = "";
+            if (module.getError() != null) {
+                runSettings.getRam().setTestVerifGpOk(false);
+                errFailure += module.getError().replace("\n", ";");
+                runSettings.getRam().setTestVerifGpMessage(errFailure);
+            }
+            if (module.getFailure() != null) {
+                runSettings.getRam().setTestVerifGpOk(false);
+                errFailure += module.getFailure().replace("\n", ";");
+                runSettings.getRam().setTestVerifGpMessage(errFailure);
             }
         }
 
@@ -1777,6 +1796,53 @@ public class RootLayoutController {
         runRfmCustomExpandedModeThread.start();
     }
 
+    @FXML private void handleMenuVerifGp() {
+        handleMenuSaveSettings();
+        // make user wait as verification executes
+        cardiotest.getMaskerPane().setText("Executing Verif_GP. Please wait..");
+        // display masker pane
+        cardiotest.getMaskerPane().setVisible(true);
+        menuBar.setDisable(true);
+        appStatusBar.setDisable(true);
+
+        cardiotest.getTxtInterpretedLog().getChildren().clear();
+        appendTextFlow("Executing Verif_GP..\n\n");
+
+        // use threads to avoid application freeze
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                runVerifGpOk = runService.runVerifGp();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                cardiotest.getMaskerPane().setVisible(false);
+                menuBar.setDisable(false);
+                appStatusBar.setDisable(false);
+                // update status bar
+                if (runVerifGpOk) {
+                    appStatusBar.setText("Executed Verif_GP: OK");
+                    Notifications.create().title("CardIO").text("Executed Verif_GP: OK").showInformation();
+                    appendTextFlow(">> OK\n\n", 0);
+                }
+                else {
+                    appStatusBar.setText("Executed Verif_GP: NOK");
+                    Notifications.create().title("CardIO").text("Executed Verif_GP: NOK").showError();
+                    appendTextFlow(">> NOT OK\n", 1);
+                }
+                // display commmand-response
+                cardiotest.getTxtCommandResponse().setDisable(false);
+                String logFileName = runSettings.getProjectPath() + "\\scripts\\Verif_GP.L00";
+                showCommandResponseLog(logFileName);
+            }
+        };
+        Thread runVerifGp = new Thread(task);
+        runVerifGp.start();
+    }
+
     @FXML private void handleMenuCodes3g() {
         handleMenuSaveSettings();
         // make user wait as verification executes
@@ -1930,9 +1996,11 @@ public class RootLayoutController {
     public MenuItem getMenuRam() { return menuRam; }
     public MenuItem getMenuRamUpdateRecord() { return menuRamUpdateRecord; }
     public MenuItem getMenuRamExpandedMode() { return menuRamExpandedMode; }
+    public MenuItem getMenuVerifGp(){ return menuVerifGp; }
     public MenuItem getMenuCodes3g() { return menuCodes3g; }
     public MenuItem getMenuCodes2g() { return menuCodes2g; }
     public ObservableList<SCP80Keyset> getScp80Keysets() { return scp80Keysets; }
+    public ObservableList<AppletParam> getAppletParams() { return appletParams; }
     public ObservableList<CustomScript> getCustomScriptsSection1() { return customScriptsSection1; }
     public ObservableList<CustomScript> getCustomScriptsSection2() { return customScriptsSection2; }
     public ObservableList<CustomScript> getCustomScriptsSection3() { return customScriptsSection3; }

@@ -2,12 +2,14 @@ package com.idemia.tec.jkt.cardiotest.controller;
 
 import com.idemia.tec.jkt.cardiotest.CardiotestApplication;
 import com.idemia.tec.jkt.cardiotest.model.AdvSaveVariable;
+import com.idemia.tec.jkt.cardiotest.model.AppletParam;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
 import com.idemia.tec.jkt.cardiotest.model.VariableMapping;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextFlow;
@@ -103,6 +105,16 @@ public class CardiotestController {
 
     private ObservableList<String> scp80KeysetLabels;
 
+    // Application Param for Verif GP
+    @FXML private CheckBox chkIncludeVerifGp;
+    @FXML private TableView<AppletParam> tblAppletParam;
+    @FXML private TableColumn<AppletParam, String> clmPackage;
+    @FXML private TableColumn<AppletParam, String> clmInstance;
+    @FXML private TableColumn<AppletParam, String> clmLifeCycle;
+    @FXML private TextField packageAidTextField;
+    @FXML private TextField instanceAidTextField;
+    @FXML private TextField lifeCycleTextField;
+
     // bottom tab pane
     @FXML private TabPane tabBottom;
     @FXML private TextFlow txtInterpretedLog;
@@ -121,12 +133,11 @@ public class CardiotestController {
     @Autowired private RfmIsimController rfmIsimController;
     @Autowired private RamController ramController;
     @Autowired private RfmCustomController rfmCustomController;
-
-    //----------------------------------
     @Autowired private FileManagementController fileManagementController;
 
     @Autowired private FileManagement2Controller fileManagement2Controller;
     //----------------------------------
+
 
     public CardiotestController() {}
 
@@ -177,6 +188,15 @@ public class CardiotestController {
             root.getScp80Keysets().add(keyset);
         // select first row initially
         tblScp80Keyset.getSelectionModel().select(0);
+
+        // Applet Param table
+        tblAppletParam.setItems(root.getAppletParams());
+        // load applet from saved settings
+        for (AppletParam appletParam : root.getRunSettings().getAppletParams())
+            root.getAppletParams().add(appletParam);
+        // select first row initially
+        tblAppletParam.getSelectionModel().select(0);
+
 
         // add authentication RiCi default values
         if (application.getMappings().size() == 0) {
@@ -355,6 +375,21 @@ public class CardiotestController {
         porFormats.add("PoR as SMS-SUBMIT");
         cmbPorFormat.getItems().addAll(porFormats);
         cmbPorFormat.setValue(root.getRunSettings().getSmsUpdate().getPorFormat());
+
+        // Verif GP
+        chkIncludeVerifGp.setSelected(root.getRunSettings().getRam().isIncludeVerifGp());
+        handleIncludeVerifGp();
+
+        // initialize applet params
+        clmPackage.setCellValueFactory(celldata -> celldata.getValue().packageAidProperty());
+        clmInstance.setCellValueFactory(celldata -> celldata.getValue().instanceAidProperty());
+        clmLifeCycle.setCellValueFactory(celldata -> celldata.getValue().lifeCycleProperty());
+        // clear fields
+        showApplet(null);
+        // listen for selection changes and show detail when changed
+        tblAppletParam.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> showApplet(newValue)
+        );
     }
 
     private void showMappings(VariableMapping mapping) {
@@ -402,6 +437,19 @@ public class CardiotestController {
             cmbKidLength.setValue(null);
             cmbKidMode.setValue(null);
             cmbCmacLength.setValue(null);
+        }
+    }
+
+    private void showApplet(AppletParam appletParam) {
+        if (appletParam != null) {
+            packageAidTextField.setText(appletParam.getPackageAid());
+            instanceAidTextField.setText(appletParam.getInstanceAid());
+            lifeCycleTextField.setText(appletParam.getLifeCycle());
+        }
+        else {
+            packageAidTextField.setText("");
+            instanceAidTextField.setText("");
+            lifeCycleTextField.setText("");
         }
     }
 
@@ -635,6 +683,27 @@ public class CardiotestController {
 
     @FXML private void handleIccidContextMenu() { cmbIccid.setItems(cardiotest.getMappedVariables()); }
 
+    @FXML private void handleIncludeVerifGp() { root.getMenuVerifGp().setDisable(!chkIncludeVerifGp.isSelected());}
+
+    @FXML private void handleButtonAddAppletParam() {
+        // add new applet param
+        String packageAid = packageAidTextField.getText();
+        String instanceAid = instanceAidTextField.getText();
+        String lifeCycle = lifeCycleTextField.getText();
+        AppletParam appletParam = new AppletParam(packageAid, instanceAid, lifeCycle);
+        root.getAppletParams().add(appletParam);
+    }
+
+    @FXML private void handleButtonDeleteAppletParam() {
+        if (root.getAppletParams().size() > 0) {
+            int selectedIndex = tblAppletParam.getSelectionModel().getSelectedIndex();
+            tblAppletParam.getItems().remove(selectedIndex);
+            showKeyset(null);
+            tblAppletParam.getSelectionModel().clearSelection();
+        }
+    }
+
+
     public void saveControlState() {
         // project details
         root.getRunSettings().setProjectPath(txtProjectFolder.getText());
@@ -692,6 +761,9 @@ public class CardiotestController {
 
         //RAM
         ramController.saveControlState();
+
+        //Verif GP
+        root.getRunSettings().getRam().setIncludeVerifGp(chkIncludeVerifGp.isSelected());
 
         // file management settings
         fileManagementController.saveControlState();

@@ -31,6 +31,7 @@ public class AboutController {
 
     @FXML private Label lblContent;
     @FXML private Label lblAuthor;
+    @FXML private Label lblRelease;
     @FXML private TextArea txtChangeLog;
     @FXML private TextArea txtCredits;
 
@@ -41,6 +42,7 @@ public class AboutController {
     @Autowired public AboutController(ResourceLoader resourceLoader) { this.resourceLoader = resourceLoader; }
 
     @FXML private void initialize() {
+        lblRelease.setText("Release 2020.09.21");
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {

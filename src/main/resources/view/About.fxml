@@ -37,6 +37,7 @@
                               <Image url="@../cardio.png" />
                            </image>
                         </ImageView>
+                        <Label fx:id="lblRelease" layoutX="192.0" layoutY="336.0" text="(release)" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="8.0" />
                      </children>
               </AnchorPane>
             </content>
@@ -45,7 +46,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TextArea fx:id="txtChangeLog" editable="false" layoutX="14.0" layoutY="20.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                  <TextArea fx:id="txtChangeLog" editable="false" layoutX="14.0" layoutY="20.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0" />
                </children>
               </AnchorPane>
             </content>

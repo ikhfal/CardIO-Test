@@ -102,6 +102,8 @@ public class CardioConfigServiceImpl implements CardioConfigService {
 
             defaultSettings.setScp80Keysets(new ArrayList<>());
 
+            defaultSettings.setAppletParams(new ArrayList<>());
+
             SmsUpdate smsUpdate = new SmsUpdate("44", "07913366003000F0", "41", false, "05811250F3", "PoR as SMS-SUBMIT");
             defaultSettings.setSmsUpdate(smsUpdate);
 

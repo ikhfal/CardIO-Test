@@ -5,6 +5,7 @@ import com.idemia.tec.jkt.cardiotest.model.MinimumSecurityLevel;
 import com.idemia.tec.jkt.cardiotest.model.Isd;
 import com.idemia.tec.jkt.cardiotest.model.Ram;
 import com.idemia.tec.jkt.cardiotest.model.SCP80Keyset;
+import com.idemia.tec.jkt.cardiotest.model.AppletParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -288,16 +289,324 @@ public class RamService {
         return ramExpandedModeBuffer;
     }
 
+    public StringBuilder generateVerifGp(Ram ram) {
+        StringBuilder ramVerifGp = new StringBuilder();
+        // call mappings and load DLLs
+        ramVerifGp.append(
+                ".CALL Mapping.txt /LIST_OFF\n"
+                        + ".CALL Options.txt /LIST_OFF\n\n"
+                        + ".POWER_ON\n"
+                        + ".LOAD dll\\Calcul.dll\n"
+                        + ".LOAD dll\\OTA2.dll\n"
+                        + ".LOAD dll\\Var_Reader.dll\n"
+        );
+        // create counter and initialize for first-time run
+        File counterBin = new File(root.getRunSettings().getProjectPath() + "\\scripts\\COUNTER.bin");
+        if (!counterBin.exists()) {
+            ramVerifGp.append(
+                    "\n; initialize counter\n"
+                            + ".SET_BUFFER L 00 00 00 00 00\n"
+                            + ".EXPORT_BUFFER L COUNTER.bin\n"
+            );
+        }
+        // load anti-replay counter
+        ramVerifGp.append(
+                "\n; buffer L contains the anti-replay counter for OTA message\n"
+                        + ".SET_BUFFER L\n"
+                        + ".IMPORT_BUFFER L COUNTER.bin\n"
+                        + ".INCREASE_BUFFER L(04:05) 0001\n"
+                        + ".DISPLAY L\n"
+                        + "\n; setup TAR\n"
+                        + ".DEFINE %TAR " + ram.getTar() + "\n"
+                        + ".DEFINE %RAM_MSL " + ram.getMinimumSecurityLevel().getComputedMsl() + "\n"
+        );
+        if (ram.isUseSpecificKeyset())
+            ramVerifGp.append(checkApplet(ram.getCipheringKeyset(), ram.getAuthKeyset(), ram.getMinimumSecurityLevel(), ram.getIsd()));
+        else {
+            for (SCP80Keyset keyset : root.getRunSettings().getScp80Keysets()) {
+                ramVerifGp.append("\n; using keyset: " + keyset.getKeysetName() + "\n");
+                ramVerifGp.append(checkApplet(keyset, keyset, ram.getMinimumSecurityLevel(), ram.getIsd()));
+            }
+        }
+        Isd isd = ram.getIsd();
+
+        if(isd.getMethodForGpCommand().equals("with Card Manager Keyset")  || isd.getMethodForGpCommand().equals("SIMBiOs")) {
+            if(!isd.isSecuredState() || isd.getMethodForGpCommand().equals("SIMBiOs")) {
+                if(isd.getMethodForGpCommand().equals("SIMBiOs")) {
+                    ramVerifGp.append(
+                            "00 A4 04 00 <?> " + root.getRunSettings().getCardParameters().getCardManagerAid() + "\n" +
+                            "00 20 00 00 08 %" + isd.getCardManagerPin() + "\n"
+                    );
+                }
+                ramVerifGp.append(
+                        "; INSTALL FOR LOAD\n" +
+                        "80 E6 02 00 1F 0C A00000001853020000000010 00 00 0E EF 0C C6020000 C8020000 C7020000 00 (6101)\n" +
+                        "\n" +
+                        "; LOAD PACKAGE\n" +
+                        "80E8000067C48201CC010016DECAFFED01020400020CA0000000185302000000001002001F0016001F0010001E0046001A00C6000A001E0000009400000000000002010004001E02000107A0000000620101010210A0000000090003FFFFFFFF8910710002030010010CA000 (6101)\n" +
+                        "80E800016700001853020000000110001F06001A43800300FF00070300000035003800A4800200810101088100000700C6020048803E008800060093800B00A000060210188C00008D0001058B00027A05318F00033D8C00042E1B181D0441181D258B00057A00207A03221D (6101)\n" +
+                        "80E800026775006800020002000D001300588D00072E1B8B0008311B1E8B000910F06B4B1B1E04418B0009100C6B401B1E05418B000961371B1E06418B000910126B2C1B1E07418B00096123188B000A701D3B8D0001103C8B000B7012188B000A8D0001038B000B70053B70 (6101)\n" +
+                        "80E8000367027A041110178D000C601A8D000D2C19040310828B000E198B000F10206B06058D00107A08000A00000000000000000000050046001106800300068109000381090901000000060000110380030201810700068108000381080D03810204030000090381090C06 (6101)\n" +
+                        "80E880043481030006810A0003810A1503810A160681070009001E0000001A070806030406040C1705060B0B090B0606050603040D05090408 (6101) \n" +
+                        "; INSTALL FOR INSTALL\n" +
+                        "80E60C0048 0C A00000001853020000000010 0C A00000001853020000000110 0F A00000001853020000000110524648 01001AEF16C7020000C8020000CA0C0100FF000000000003524648C90000 (6101)\n" +
+                        "; DELETE INSTANCE\n" +
+                        "80E4000011 4F0F A00000001853020000000110524648 (6101)\n" +
+                        "; DELETE PACKAGE\n" +
+                        "80E400000E 4F0C A00000001853020000000010 (6101)\n"
+                );
+            } else {
+                ramVerifGp.append(
+                        "; INSTALL FOR LOAD\n" +
+                        ".SET_BUFFER N 80 E6 02 00 1F 0C A00000001853020000000010 00 00 0E EF 0C C6020000 C8020000 C7020000 00\n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        "\n" +
+                        "; LOAD PACKAGE\n" +
+                        ".SET_BUFFER N 80E8000067C48201CC010016DECAFFED01020400020CA0000000185302000000001002001F0016001F0010001E0046001A00C6000A001E0000009400000000000002010004001E02000107A0000000620101010210A0000000090003FFFFFFFF8910710002030010010CA000 \n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        ".SET_BUFFER N 80E800016700001853020000000110001F06001A43800300FF00070300000035003800A4800200810101088100000700C6020048803E008800060093800B00A000060210188C00008D0001058B00027A05318F00033D8C00042E1B181D0441181D258B00057A00207A03221D \n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        ".SET_BUFFER N 80E800026775006800020002000D001300588D00072E1B8B0008311B1E8B000910F06B4B1B1E04418B0009100C6B401B1E05418B000961371B1E06418B000910126B2C1B1E07418B00096123188B000A701D3B8D0001103C8B000B7012188B000A8D0001038B000B70053B70\n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        ".SET_BUFFER N 80E8000367027A041110178D000C601A8D000D2C19040310828B000E198B000F10206B06058D00107A08000A00000000000000000000050046001106800300068109000381090901000000060000110380030201810700068108000381080D03810204030000090381090C06\n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        ".SET_BUFFER N 80E880043481030006810A0003810A1503810A160681070009001E0000001A070806030406040C1705060B0B090B0606050603040D05090408\n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        "; INSTALL FOR INSTALL\n" +
+                        ".SET_BUFFER N 80E60C00480CA000000018530200000000100CA000000018530200000001100FA0000000185302000000011052464801001AEF16C7020000C8020000CA0C0100FF000000000003524648C90000 \n" +
+                        scp0255(isd) +
+                        "N (9000,6101) \n" +
+                        "; DELETE INSTANCE\n" +
+                        ".SET_BUFFER N 80E40000114F0FA00000001853020000000110524648  \n" +
+                        scp0255(isd) +
+                        "N (9000,6101)\n" +
+                        "; DELETE PACKAGE\n" +
+                        ".SET_BUFFER N 80E400000E4F0CA00000001853020000000010  \n" +
+                        scp0255(isd) +
+                        "N (9000,6101) \n"
+                );
+            }
+        }
+        return ramVerifGp;
+    }
+    private String checkApplet(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Isd isd) {
+        StringBuilder routine = new StringBuilder();
+        if(isd.getMethodForGpCommand().equals("no Card Manager Keyset")) {
+            routine.append(
+                    ".POWER_ON\n" +
+                    ".SET_BUFFER I %RAM_MSL \n"
+                    + proactiveInitialization()
+                    + "\n; SPI settings\n"
+                    + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
+                    + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
+                    + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
+                    + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
+                    + ".INIT_ENV_0348\n"
+                    + ".CHANGE_TP_PID " + root.getRunSettings().getSmsUpdate().getTpPid() + "\n"
+            );
+            if (root.getRunSettings().getSmsUpdate().isUseWhiteList())
+                routine.append(".CHANGE_TP_OA " + root.getRunSettings().getSmsUpdate().getTpOa() + "\n");
+            routine.append(
+                    ".CHANGE_TAR %TAR\n"
+                    + "\n; MSL = " + msl.getComputedMsl() + "\n"
+                    + ".SET_DLKEY_KIC O\n"
+                    + ".SET_DLKEY_KID Q\n"
+                    + ".CHANGE_KIC M\n"
+                    + ".CHANGE_KID N\n"
+                    + spiConfigurator(msl, cipherKeyset, authKeyset)
+            );
+            if (authKeyset.getKidMode().equals("AES - CMAC"))
+                routine.append(".SET_CMAC_LENGTH " + String.format("%02X", authKeyset.getCmacLength()) + "\n");
+
+            int appletno = 1;
+            for(AppletParam appletParam : root.getRunSettings().getAppletParams()) {
+                routine.append(
+                        ";APPLET " + appletno + " \n"
+                );
+                appletno++ ;
+                System.out.println("Here Generate");
+                routine.append(
+                        ".CHANGE_COUNTER L\n" +
+                        ".INCREASE_BUFFER L(04:05) 0001 \n" +
+                        ".DEFINE %Package_Aid " + appletParam.getPackageAid() + "\n" +
+                        ".SET_BUFFER J 80F2 2000 <?> 4F <%Package_Aid> %Package_Aid \n" +
+                        ".APPEND_BUFFER J 00C00000 00 \n" +
+                        ".APPEND_SCRIPT J\n" +
+                        ".END_MESSAGE G J\n" +
+                        "\n" +
+                        "A0 C2 00 00 G J (9FXX)\n" +
+                        ".CLEAR_SCRIPT \n" +
+                        "\n" +
+                        "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX <%Package_Aid> %Package_Aid 01 00]\n" +
+                        "\n" +
+                        "\n" +
+                        ".CHANGE_COUNTER L\n" +
+                        ".INCREASE_BUFFER L(04:05) 0001 \n" +
+                        ".DEFINE %Instance_Aid " + appletParam.getInstanceAid() + "\n" +
+                        ".SET_BUFFER J 80F2 4000 <?> 4F <%Instance_Aid> %Instance_Aid \n" +
+                        ".APPEND_BUFFER J 00C00000 00 \n" +
+                        ".APPEND_SCRIPT J\n" +
+                        ".END_MESSAGE G J\n" +
+                        "\n" +
+                        "A0 C2 00 00 G J (9FXX)\n" +
+                        ".CLEAR_SCRIPT \n" +
+                        "\n" +
+                        "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX <%Instance_Aid> %Instance_Aid " + appletParam.getLifeCycle() + " 00]\n" +
+                        ".UNDEFINE %Package_Aid \n" +
+                        ".UNDEFINE %Instance_Aid \n"
+                );
+            }
+            routine.append(
+                    ".EXPORT_BUFFER L COUNTER.bin \n"
+            );
+        } else {
+            routine.append(
+                    openChannel(isd)
+            );
+            if (!isd.isSecuredState() || isd.getMethodForGpCommand().equals("SIMBiOs")) {
+                int appletno = 1;
+                for(AppletParam appletParam : root.getRunSettings().getAppletParams()) {
+                    routine.append(
+                            ";APPLET " + appletno + " \n"
+                    );
+                    appletno++ ;
+                    if(!appletParam.getPackageAid().equals("")) {
+                        routine.append(
+                                ".DEFINE %Package_Aid " + appletParam.getPackageAid() + "\n" +
+                                "80F2 2000 <?> 4F <%Package_Aid> %Package_Aid \n" +
+                                "00 C0 00 00 W(2;1) [<%Package_Aid> %Package_Aid 01 00] \n"
+                        );
+                    }
+                    if(!appletParam.getInstanceAid().equals("")) {
+                        routine.append(
+                                ".DEFINE %Instance_Aid " + appletParam.getInstanceAid() + "\n" +
+                                "80F2 4000 <?> 4F <%Instance_Aid> %Instance_Aid \n" +
+                                "00 C0 00 00 W(2;1) [<%Instance_Aid> %Instance_Aid " + appletParam.getLifeCycle() + " 00]\n"
+
+                        );
+                    }
+                    routine.append(
+                            ".UNDEFINE %Package_Aid \n" +
+                            ".UNDEFINE %Instance_Aid \n" +
+                            "\n"
+                    );
+                }
+            } else {
+                for(AppletParam appletParam : root.getRunSettings().getAppletParams()) {
+                    if(!appletParam.getPackageAid().equals("")) {
+                        routine.append(
+                                ".DEFINE %Package_Aid " + appletParam.getPackageAid() + "\n" +
+                                ".SET_BUFFER N 80F2 2000 <?> 4F <%Package_Aid> %Package_Aid \n" +
+                                scp0255(isd) +
+                                "N [<%Package_Aid> %Package_Aid 01 00]\n"
+                        );
+                    }
+                    if(!appletParam.getInstanceAid().equals("")) {
+                        routine.append(
+                            ".DEFINE %Instance_Aid " + appletParam.getInstanceAid() + "\n" +
+                            ".SET_BUFFER N 80F2 4000 <?> 4F <%Instance_Aid> %Instance_Aid \n" +
+                            scp0255(isd) +
+                            "N  [<%Instance_Aid> %Instance_Aid " + appletParam.getLifeCycle() + " 00]\n"
+                        );
+                    }
+                    routine.append(
+                            ".UNDEFINE %Package_Aid \n" +
+                            ".UNDEFINE %Instance_Aid \n" +
+                            "\n"
+                    );
+                }
+            }
+        }
+        return routine.toString();
+    }
+
+    private String scp0255(Isd isd) {
+        StringBuilder routine = new StringBuilder();
+        if (isd.getScLevel().equals("01") || isd.getScLevel().equals("03")) {
+            routine.append(
+                    "\t.SET_BUFFER L <N>\n" +
+                    "\t.SWITCH L\n" +
+                    "\t\t.CASE 04\n" +
+                    "\t\t\t.APPEND_BUFFER N 00\n" +
+                    "\t\t.DEFAULT\n" +
+                    "\t\t.BREAK\n" +
+                    "\t.ENDSWITCH\n" +
+                    "\n" +
+                    "\t; Update command class\n" +
+                    "\t.SET_BUFFER L N(1;1)\n" +
+                    "\t.INCREASE_BUFFER L 04\n" +
+                    "\n" +
+                    "\t.SET_BUFFER N(1;1) L\n" +
+                    "\n" +
+                    "\t; Update command length\n" +
+                    "\t.SET_BUFFER L N(5;1)\n" +
+                    "\t.INCREASE_BUFFER L 08\n" +
+                    "\t.DISPLAY L\n" +
+                    "\n" +
+                    "\t.SET_BUFFER N(5;1) L\n" +
+                    "\n" +
+                    "\t; Data for MAC computation (Previous MAC || Command)\n" +
+                    "\t.SET_DATA M N\n" +
+                    "\t.SET_VECT_INI 0000000000000000\n" +
+                    "\t; Use MAC Session Key\n" +
+                    "\t.SET_KEY J\n" +
+                    "\t; Compute MAC\n" +
+                    "\t.MAC3 M 80 /P\n" +
+                    "\n" +
+                    "\t; Append MAC to command\n" +
+                    "\t.APPEND_BUFFER N M\n"
+            );
+        }
+        if (isd.getScLevel().equals("03")) {
+            routine.append(
+                    "\t; Retrieve the length of the data to encrypt\n" +
+                    "\t.SET_BUFFER L <N>\n" +
+                    "\t.DECREASE_BUFFER L 0D\n" +
+                    "\n" +
+                    "\t.SWITCH L\n" +
+                    "\t\t.CASE 00\n" +
+                    "\t\t\t* No data to encrypt\n" +
+                    "\t\t.BREAK\n" +
+                    "\n" +
+                    "\t\t.DEFAULT\n" +
+                    "\t\t\t; Retrieve data to be encrypted\n" +
+                    "\t\t\t.SET_DATA N(6;L)\n" +
+                    "\t\t\t.SET_VECT_INI 0000000000000000\n" +
+                    "\t\t\t; Use Authentication/Encryption Session Key\n" +
+                    "\t\t\t.SET_KEY I\n" +
+                    "\t\t\t; Encrypt data and put result in L \n" +
+                    "\t\t\t.DES3CBC L 80 /P\n" +
+                    "\n" +
+                    "\t\t\t; Put length of encrypted data in Lc\n" +
+                    "\t\t\t.SET_BUFFER N(5;1) <L>\n" +
+                    "\t\t\t; Add MAC length to Lc\n" +
+                    "\t\t\t.INCREASE_BUFFER N(5;1) 08\n" +
+                    "\n" +
+                    "\t\t\t; construct command with encrypted data and computed MAC\n" +
+                    "\t\t\t.SET_BUFFER N N(1;5) L M\n" +
+                    "\t\t.BREAK\n" +
+                    "\t.ENDSWITCH\n"
+            );
+        }
+        return routine.toString();
+    }
+
     private String ramCase1(SCP80Keyset cipherKeyset, SCP80Keyset authKeyset, MinimumSecurityLevel msl, Isd isd, Boolean isUpdateRecord) {
         StringBuilder routine = new StringBuilder();
         routine.append(
                 "\n.POWER_ON\n"
-                        + proactiveInitialization()
-                        + "\n; SPI settings\n"
-                        + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
-                        + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
-                        + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
-                        + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
+                + proactiveInitialization()
+                + "\n; SPI settings\n"
+                + ".SET_BUFFER O %" + cipherKeyset.getKicValuation() + "\n"
+                + ".SET_BUFFER Q %" + authKeyset.getKidValuation() + "\n"
+                + ".SET_BUFFER M " + cipherKeyset.getComputedKic() + "\n"
+                + ".SET_BUFFER N " + authKeyset.getComputedKid() + "\n"
         );
         if(isUpdateRecord) {
             routine.append(
@@ -432,75 +741,8 @@ public class RamService {
                 );
             } else {
                 routine.append(
-                        ".SET_BUFFER N 80F2 2000 0E 4F 0C  A00000001853020000000010 (61 0F)\n"
-                );
-                if (isd.getScLevel().equals("01") || isd.getScLevel().equals("03")) {
-                    routine.append(
-                            "\t.SET_BUFFER L <N>\n" +
-                                    "\t.SWITCH L\n" +
-                                    "\t\t.CASE 04\n" +
-                                    "\t\t\t.APPEND_BUFFER N 00\n" +
-                                    "\t\t.DEFAULT\n" +
-                                    "\t\t.BREAK\n" +
-                                    "\t.ENDSWITCH\n" +
-                                    "\n" +
-                                    "\t; Update command class\n" +
-                                    "\t.SET_BUFFER L N(1;1)\n" +
-                                    "\t.INCREASE_BUFFER L 04\n" +
-                                    "\n" +
-                                    "\t.SET_BUFFER N(1;1) L\n" +
-                                    "\n" +
-                                    "\t; Update command length\n" +
-                                    "\t.SET_BUFFER L N(5;1)\n" +
-                                    "\t.INCREASE_BUFFER L 08\n" +
-                                    "\t.DISPLAY L\n" +
-                                    "\n" +
-                                    "\t.SET_BUFFER N(5;1) L\n" +
-                                    "\n" +
-                                    "\t; Data for MAC computation (Previous MAC || Command)\n" +
-                                    "\t.SET_DATA M N\n" +
-                                    "\t.SET_VECT_INI 0000000000000000\n" +
-                                    "\t; Use MAC Session Key\n" +
-                                    "\t.SET_KEY J\n" +
-                                    "\t; Compute MAC\n" +
-                                    "\t.MAC3 M 80 /P\n" +
-                                    "\n" +
-                                    "\t; Append MAC to command\n" +
-                                    "\t.APPEND_BUFFER N M\n"
-                    );
-                }
-                if (isd.getScLevel().equals("03")) {
-                    routine.append(
-                            "\t; Retrieve the length of the data to encrypt\n" +
-                                    "\t.SET_BUFFER L <N>\n" +
-                                    "\t.DECREASE_BUFFER L 0D\n" +
-                                    "\n" +
-                                    "\t.SWITCH L\n" +
-                                    "\t\t.CASE 00\n" +
-                                    "\t\t\t* No data to encrypt\n" +
-                                    "\t\t.BREAK\n" +
-                                    "\n" +
-                                    "\t\t.DEFAULT\n" +
-                                    "\t\t\t; Retrieve data to be encrypted\n" +
-                                    "\t\t\t.SET_DATA N(6;L)\n" +
-                                    "\t\t\t.SET_VECT_INI 0000000000000000\n" +
-                                    "\t\t\t; Use Authentication/Encryption Session Key\n" +
-                                    "\t\t\t.SET_KEY I\n" +
-                                    "\t\t\t; Encrypt data and put result in L \n" +
-                                    "\t\t\t.DES3CBC L 80 /P\n" +
-                                    "\n" +
-                                    "\t\t\t; Put length of encrypted data in Lc\n" +
-                                    "\t\t\t.SET_BUFFER N(5;1) <L>\n" +
-                                    "\t\t\t; Add MAC length to Lc\n" +
-                                    "\t\t\t.INCREASE_BUFFER N(5;1) 08\n" +
-                                    "\n" +
-                                    "\t\t\t; construct command with encrypted data and computed MAC\n" +
-                                    "\t\t\t.SET_BUFFER N N(1;5) L M\n" +
-                                    "\t\t.BREAK\n" +
-                                    "\t.ENDSWITCH\n"
-                    );
-                }
-                routine.append(
+                        ".SET_BUFFER N 80F2 2000 0E 4F 0C  A00000001853020000000010 (61 0F)\n" +
+                        scp0255(isd) +
                         "N [0C  A00000001853020000000010 0100]\n"
                 );
             }
@@ -786,75 +1028,8 @@ public class RamService {
                 );
             } else {
                 routine.append(
-                        ".SET_BUFFER N 80F22000124F10A0000000770107601100020000000070 (61 13)\n"
-                );
-                if (isd.getScLevel().equals("01") || isd.getScLevel().equals("03")) {
-                    routine.append(
-                            "\t.SET_BUFFER L <N>\n" +
-                            "\t.SWITCH L\n" +
-                            "\t\t.CASE 04\n" +
-                            "\t\t\t.APPEND_BUFFER N 00\n" +
-                            "\t\t.DEFAULT\n" +
-                            "\t\t.BREAK\n" +
-                            "\t.ENDSWITCH\n" +
-                            "\n" +
-                            "\t; Update command class\n" +
-                            "\t.SET_BUFFER L N(1;1)\n" +
-                            "\t.INCREASE_BUFFER L 04\n" +
-                            "\n" +
-                            "\t.SET_BUFFER N(1;1) L\n" +
-                            "\n" +
-                            "\t; Update command length\n" +
-                            "\t.SET_BUFFER L N(5;1)\n" +
-                            "\t.INCREASE_BUFFER L 08\n" +
-                            "\t.DISPLAY L\n" +
-                            "\n" +
-                            "\t.SET_BUFFER N(5;1) L\n" +
-                            "\n" +
-                            "\t; Data for MAC computation (Previous MAC || Command)\n" +
-                            "\t.SET_DATA M N\n" +
-                            "\t.SET_VECT_INI 0000000000000000\n" +
-                            "\t; Use MAC Session Key\n" +
-                            "\t.SET_KEY J\n" +
-                            "\t; Compute MAC\n" +
-                            "\t.MAC3 M 80 /P\n" +
-                            "\n" +
-                            "\t; Append MAC to command\n" +
-                            "\t.APPEND_BUFFER N M\n"
-                    );
-                }
-                if (isd.getScLevel().equals("03")) {
-                    routine.append(
-                            "\t; Retrieve the length of the data to encrypt\n" +
-                                    "\t.SET_BUFFER L <N>\n" +
-                                    "\t.DECREASE_BUFFER L 0D\n" +
-                                    "\n" +
-                                    "\t.SWITCH L\n" +
-                                    "\t\t.CASE 00\n" +
-                                    "\t\t\t* No data to encrypt\n" +
-                                    "\t\t.BREAK\n" +
-                                    "\n" +
-                                    "\t\t.DEFAULT\n" +
-                                    "\t\t\t; Retrieve data to be encrypted\n" +
-                                    "\t\t\t.SET_DATA N(6;L)\n" +
-                                    "\t\t\t.SET_VECT_INI 0000000000000000\n" +
-                                    "\t\t\t; Use Authentication/Encryption Session Key\n" +
-                                    "\t\t\t.SET_KEY I\n" +
-                                    "\t\t\t; Encrypt data and put result in L \n" +
-                                    "\t\t\t.DES3CBC L 80 /P\n" +
-                                    "\n" +
-                                    "\t\t\t; Put length of encrypted data in Lc\n" +
-                                    "\t\t\t.SET_BUFFER N(5;1) <L>\n" +
-                                    "\t\t\t; Add MAC length to Lc\n" +
-                                    "\t\t\t.INCREASE_BUFFER N(5;1) 08\n" +
-                                    "\n" +
-                                    "\t\t\t; construct command with encrypted data and computed MAC\n" +
-                                    "\t\t\t.SET_BUFFER N N(1;5) L M\n" +
-                                    "\t\t.BREAK\n" +
-                                    "\t.ENDSWITCH\n"
-                    );
-                }
-                routine.append(
+                        ".SET_BUFFER N 80F22000124F10A0000000770107601100020000000070 (61 13)\n" +
+                        scp0255(isd) +
                         "N [10  A0000000770107601100020000000070 0100]\n"
                 );
             }
@@ -1734,14 +1909,14 @@ public class RamService {
                     "A0 B2 01 04 B0 \n" +
                     "\n" +
                     "A0 12 0000 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX016101] (9000)\n" +
-                    "A0 14 0000 0C 8103011300 82028183 830100 (9000)"
+                    "A0 14 0000 0C 8103011300 82028183 830100 (9000) \n"
             );
         } else {
             routine.append(
                     "A0 C2 00 00 G J (9FXX)\n" +
                     ".CLEAR_SCRIPT\n" +
                     "\n" +
-                    "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0161XX]"
+                    "A0 C0 00 00 W(2;1) [XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX0161XX] \n"
             );
 
         }
