@@ -45,7 +45,7 @@ public class FileManagementService {
             );
         }
 
-        /*
+
         if (root.getRunSettings().getSecretCodes().isPin2disabled())
         {
             linkFileTestBuffer.append(
@@ -53,7 +53,7 @@ public class FileManagementService {
                             +"00 28 00 81 08 %"+ root.getRunSettings().getSecretCodes().getLpin() +" (9000)\n\n"
             );
         }
-         */
+
 
         linkFileTestBuffer.append(
                 //"00A40400<?> %USIM_AID\t(61xx)\n"
@@ -61,6 +61,20 @@ public class FileManagementService {
                         //+ "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n"
                         + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
                 );
+
+        if (fileManagement.isLinkFilesSimbiosCtd_bool())
+        {
+            linkFileTestBuffer.append(
+                    "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n"
+            );
+        }
+        else
+        {
+            linkFileTestBuffer.append(
+                    "00A40400<?> %USIM_AID\t(61xx)\n"
+                            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n"
+            );
+        }
 
 
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
@@ -401,7 +415,7 @@ public class FileManagementService {
                             +".POWER_OFF\n"
             );
         }
-/*
+
         if (root.getRunSettings().getSecretCodes().isPin2disabled())
         {
             linkFileTestBuffer.append(
@@ -412,7 +426,7 @@ public class FileManagementService {
             );
         }
 
- */
+
 
         return linkFileTestBuffer;
     }
@@ -448,7 +462,7 @@ public class FileManagementService {
                                     +"00 28 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n\n"
                     );
                 }
-/*
+
                 if (root.getRunSettings().getSecretCodes().isPin2disabled())
                 {
                     ruwiTestBuffer.append(
@@ -457,13 +471,13 @@ public class FileManagementService {
                     );
                 }
 
- */
+
 
                 ruwiTestBuffer.append(
                         "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
                                 + "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
                                 //"00A40400<?> %USIM_AID\t(61xx)\n"
-                                //+ "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                                + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
                 );
 
                 if (root.getRunSettings().getSecretCodes().isUseIsc2())
@@ -797,7 +811,7 @@ public class FileManagementService {
                                     +"00 26 00 01 08 %"+ root.getRunSettings().getSecretCodes().getGpin() +" (9000)\n\n"
                     );
                 }
-/*
+
                 if (root.getRunSettings().getSecretCodes().isPin2disabled())
                 {
                     ruwiTestBuffer.append(
@@ -806,7 +820,7 @@ public class FileManagementService {
                     );
                 }
 
- */
+
 
             }
 
@@ -820,7 +834,7 @@ public class FileManagementService {
                                     +"A0 28 00 01 08 %"+ root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n\n"
                     );
                 }
-/*
+
                 if (root.getRunSettings().getSecretCodes().isPin2disabled())
                 {
                     ruwiTestBuffer.append(
@@ -829,12 +843,11 @@ public class FileManagementService {
                     );
                 }
 
- */
 
                 ruwiTestBuffer.append(
                         "A0 20 00 00 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n"
                                 + "A0 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getChv1() + " (9000)\n"
-                                //+ "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
+                                + "A0 20 00 02 08 %" + root.getRunSettings().getSecretCodes().getChv2() + " (9000)\n"
                 );
 
                 if (root.getRunSettings().getSecretCodes().isUseIsc2())
@@ -848,7 +861,7 @@ public class FileManagementService {
                 ruwiTestBuffer.append(
                         ".DEFINE %_VERIFY_ADM1_ A0 2000 00 08  %" + root.getRunSettings().getSecretCodes().getIsc1() + "\n"
                                 + ".DEFINE %_VERIFY_CHV1_ A0 2000 01 08 %" + root.getRunSettings().getSecretCodes().getChv1()+ "\n"
-                                //+ ".DEFINE %_VERIFY_CHV2_ A0 2000 02 08 %" + root.getRunSettings().getSecretCodes().getChv2()+ "\n"
+                                + ".DEFINE %_VERIFY_CHV2_ A0 2000 02 08 %" + root.getRunSettings().getSecretCodes().getChv2()+ "\n"
                 );
 
                 if (root.getRunSettings().getSecretCodes().isUseIsc2())
@@ -949,7 +962,7 @@ public class FileManagementService {
                                     + ".POWER_OFF\n"
                     );
                 }
-/*
+
                 if (root.getRunSettings().getSecretCodes().isPin2disabled())
                 {
                     ruwiTestBuffer.append(
@@ -960,7 +973,6 @@ public class FileManagementService {
                     );
                 }
 
- */
 
             }
 
@@ -1114,7 +1126,7 @@ public class FileManagementService {
                             +"00 28 00 01 08 %"+ root.getRunSettings().getSecretCodes().getGpin() +" (9000)\n\n"
             );
         }
-/*
+
         if (root.getRunSettings().getSecretCodes().isPin2disabled())
         {
             sfiTestBuffer.append(
@@ -1123,13 +1135,28 @@ public class FileManagementService {
             );
         }
 
- */
+
 
         sfiTestBuffer.append(
                 //"00A40400<?> %USIM_AID\t(61xx)\n"
                         "00 20 00 01 08 %" + root.getRunSettings().getSecretCodes().getGpin() + " (9000)\n"
                         //+ "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n"
                         + "00 20 00 0A 08 %" + root.getRunSettings().getSecretCodes().getIsc1() + " (9000)\n");
+
+        if (fileManagement.isLinkFilesSimbiosCtd_bool())
+        {
+            sfiTestBuffer.append(
+                    "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n"
+            );
+        }
+        else
+        {
+            sfiTestBuffer.append(
+                    "00A40400<?> %USIM_AID\t(61xx)\n"
+                            + "00 20 00 81 08 %" + root.getRunSettings().getSecretCodes().getLpin() + " (9000)\n"
+            );
+        }
+
         if (root.getRunSettings().getSecretCodes().isUseIsc2())
             sfiTestBuffer.append("00 20 00 0B 08 %" + root.getRunSettings().getSecretCodes().getIsc2() + " (9000)\n");
         if (root.getRunSettings().getSecretCodes().isUseIsc3())
@@ -1280,41 +1307,41 @@ public class FileManagementService {
 
         sfiTestBuffer.append("; EF ICI\n");
         if (fileManagement.isSFI_ICI_6F80_14_bool())
-            sfiTestBuffer.append("%READ_RECORD $ 01 A0 00\n%READ_RECORD $ 01 A0 W(2;1) (9000)\n\n");
-        else
-            sfiTestBuffer.append(";%READ_RECORD $ 01 A0 00\n;%READ_RECORD $ 01 A0 W(2;1) (9000)\n\n");
-
-        sfiTestBuffer.append("; EF OCI\n");
-        if (fileManagement.isSFI_OCI_6F81_15_bool())
-            sfiTestBuffer.append("%READ_RECORD $ 01 A1 00\n%READ_RECORD $ 01 A1 W(2;1) (9000)\n\n");
-        else
-            sfiTestBuffer.append(";%READ_RECORD $ 01 A1 00\n;%READ_RECORD $ 01 A1 W(2;1) (9000)\n\n");
-
-        sfiTestBuffer.append("; EF CCP2\n");
-        if (fileManagement.isSFI_CCP2_6F4F_16_bool())
             sfiTestBuffer.append("%READ_RECORD $ 01 A2 00\n%READ_RECORD $ 01 A2 W(2;1) (9000)\n\n");
         else
             sfiTestBuffer.append(";%READ_RECORD $ 01 A2 00\n;%READ_RECORD $ 01 A2 W(2;1) (9000)\n\n");
 
+        sfiTestBuffer.append("; EF OCI\n");
+        if (fileManagement.isSFI_OCI_6F81_15_bool())
+            sfiTestBuffer.append("%READ_RECORD $ 01 AA 00\n%READ_RECORD $ 01 AA W(2;1) (9000)\n\n");
+        else
+            sfiTestBuffer.append(";%READ_RECORD $ 01 AA 00\n;%READ_RECORD $ 01 AA W(2;1) (9000)\n\n");
+
+        sfiTestBuffer.append("; EF CCP2\n");
+        if (fileManagement.isSFI_CCP2_6F4F_16_bool())
+            sfiTestBuffer.append("%READ_RECORD $ 01 B4 00\n%READ_RECORD $ 01 B4 W(2;1) (9000)\n\n");
+        else
+            sfiTestBuffer.append(";%READ_RECORD $ 01 B4 00\n;%READ_RECORD $ 01 B4 W(2;1) (9000)\n\n");
+
         sfiTestBuffer.append("; EF ARR\n");
         if (fileManagement.isSFI_ARR_6F06_17_bool())
-            sfiTestBuffer.append("%READ_RECORD $ 01 A3 00\n%READ_RECORD $ 01 A3 W(2;1) (9000)\n\n");
+            sfiTestBuffer.append("%READ_RECORD $ 01 BC 00\n%READ_RECORD $ 01 BC W(2;1) (9000)\n\n");
         else
-            sfiTestBuffer.append(";%READ_RECORD $ 01 A3 00\n;%READ_RECORD $ 01 A3 W(2;1) (9000)\n\n");
+            sfiTestBuffer.append(";%READ_RECORD $ 01 BC 00\n;%READ_RECORD $ 01 BC W(2;1) (9000)\n\n");
 
 //SFI_ePDGIdEm_6F65_18_bool
 
         sfiTestBuffer.append("; EF PNN\n");
         if (fileManagement.isSFI_PNN_6FC5_19_bool())
-            sfiTestBuffer.append("%READ_RECORD $ 01 A4 00\n%READ_RECORD $ 01 A4 W(2;1) (9000)\n\n");
+            sfiTestBuffer.append("%READ_RECORD $ 01 CC 00\n%READ_RECORD $ 01 CC W(2;1) (9000)\n\n");
         else
-            sfiTestBuffer.append(";%READ_RECORD $ 01 A4 00\n;%READ_RECORD $ 01 A4 W(2;1) (9000)\n\n");
+            sfiTestBuffer.append(";%READ_RECORD $ 01 CC 00\n;%READ_RECORD $ 01 CC W(2;1) (9000)\n\n");
 
         sfiTestBuffer.append("; EF OPL\n");
         if (fileManagement.isSFI_OPL_6FC6_1A_bool())
-            sfiTestBuffer.append("%READ_RECORD $ 01 A5 00\n%READ_RECORD $ 01 A5 W(2;1) (9000)\n\n");
+            sfiTestBuffer.append("%READ_RECORD $ 01 D4 00\n%READ_RECORD $ 01 D4 W(2;1) (9000)\n\n");
         else
-            sfiTestBuffer.append(";%READ_RECORD $ 01 A5 00\n;%READ_RECORD $ 01 A5 W(2;1) (9000)\n\n");
+            sfiTestBuffer.append(";%READ_RECORD $ 01 D4 00\n;%READ_RECORD $ 01 D4 W(2;1) (9000)\n\n");
 
         sfiTestBuffer.append("; EF SPDI\n");
         if (fileManagement.isSFI_SPDI_6FCD_1B_bool())
@@ -1324,9 +1351,9 @@ public class FileManagementService {
 
         sfiTestBuffer.append("; EF ACM\n");
         if (fileManagement.isSFI_ACM_6F39_1C_bool())
-            sfiTestBuffer.append("%READ_RECORD $ 01 C0 00\n%READ_RECORD $ 01 C0 W(2;1) (9000)\n\n");
+            sfiTestBuffer.append("%READ_RECORD $ 01 E2 00\n%READ_RECORD $ 01 E2 W(2;1) (9000)\n\n");
         else
-            sfiTestBuffer.append(";%READ_RECORD $ 01 C0 00\n;%READ_RECORD $ 01 C0 W(2;1) (9000)\n\n");
+            sfiTestBuffer.append(";%READ_RECORD $ 01 E2 00\n;%READ_RECORD $ 01 E2 W(2;1) (9000)\n\n");
 
 //Kc
 //KcGPRS

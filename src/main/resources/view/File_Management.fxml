@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.FileManagementController">
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.idemia.tec.jkt.cardiotest.controller.FileManagementController">
   <children>
     <ScrollPane prefHeight="630.0" prefWidth="1530.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <content>
@@ -26,10 +26,10 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="514.0" prefWidth="590.0">
                   <children>
-                    <TextField fx:id="path_MasterTextField" layoutX="19.0" layoutY="34.0" prefHeight="25.0" prefWidth="161.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="8.0" />
-                    <TextField fx:id="path_GhostTextField" layoutX="29.0" layoutY="315.0" prefHeight="21.0" prefWidth="141.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="40.0" />
-                    <Button fx:id="addLinkFileButton" layoutX="40.0" layoutY="135.0" mnemonicParsing="false" onAction="#newPathButtonPushed" prefWidth="65.0" text="Add" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="75.0" />
-                    <Button fx:id="deleteLinkFileButton" layoutX="129.0" layoutY="132.0" mnemonicParsing="false" onMouseClicked="#deletePathButtonPusshed" prefWidth="65.0" text="Delete" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="110.0" />
+                    <TextField fx:id="path_MasterTextField" layoutX="19.0" layoutY="34.0" prefHeight="25.0" prefWidth="161.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="40.0" />
+                    <TextField fx:id="path_GhostTextField" layoutX="29.0" layoutY="315.0" prefHeight="21.0" prefWidth="141.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="75.0" />
+                    <Button fx:id="addLinkFileButton" layoutX="40.0" layoutY="135.0" mnemonicParsing="false" onAction="#newPathButtonPushed" prefWidth="65.0" text="Add" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="110.0" />
+                    <Button fx:id="deleteLinkFileButton" layoutX="129.0" layoutY="132.0" mnemonicParsing="false" onMouseClicked="#deletePathButtonPusshed" prefWidth="65.0" text="Delete" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="145.0" />
                     <TableView fx:id="tblLinkFileTest" layoutX="308.6" layoutY="39.6" prefHeight="426.0" prefWidth="297.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
                       <columns>
                         <TableColumn fx:id="clmMaster" onEditCommit="#changePath_MasterCellEvent" prefWidth="-1.0" text="Master" />
@@ -39,6 +39,7 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                       </columnResizePolicy>
                     </TableView>
+                              <CheckBox fx:id="LinkFilesSimbiosCtdCheckbox" layoutX="29.0" layoutY="17.0" mnemonicParsing="false" onAction="#HandleLinkFilesSimbiosCtd" text="SimBIOS" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0" />
                   </children>
                 </AnchorPane>
               </content>
@@ -47,7 +48,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="514.0" prefWidth="301.0">
                   <children>
-                    <CheckBox fx:id="RuwiSimbiosCtdCheckbox" layoutX="53.0" layoutY="15.0" mnemonicParsing="false" text="SimBIOS" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0" />
+                    <CheckBox fx:id="RuwiSimbiosCtdCheckbox" layoutX="53.0" layoutY="15.0" mnemonicParsing="false" onAction="#HandleRuwiSimbiosCtd" text="SimBIOS" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0" />
                     <TextField fx:id="path_RuwiTextField" layoutX="25.0" layoutY="22.0" prefHeight="25.0" prefWidth="86.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="40.0" />
                     <Button fx:id="addRuwiButton" layoutX="68.0" layoutY="116.0" mnemonicParsing="false" onAction="#newPathButtonRuwiPushed" prefWidth="65.0" text="Add" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="75.0" />
                     <Button fx:id="deleteRuwiButton" layoutX="66.0" layoutY="149.0" mnemonicParsing="false" onAction="#deletePathButtonRuwiPusshed" prefWidth="65.0" text="Delete" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="110.0" />

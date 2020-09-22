@@ -190,7 +190,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setRfmCustom(rfmCustom);
             rfmCustom.setCustomRfmDesc("RFM ...");
 
-            FileManagement fileManagement = new FileManagement(true, false, null ,true, false, null,true, false, null,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,0,0,false);
+            FileManagement fileManagement = new FileManagement(true, false, null ,true, false, null,true, false, null,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,0,0,false,false);
             defaultSettings.setFileManagement(fileManagement);
 
             ObjectMapper mapper = new ObjectMapper();

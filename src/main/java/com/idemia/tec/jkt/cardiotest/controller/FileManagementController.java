@@ -20,6 +20,7 @@ public class FileManagementController  {
     @Autowired private RootLayoutController root;
     @Autowired private CardiotestController cardiotest;
 
+    @FXML private CheckBox LinkFilesSimbiosCtdCheckbox;
     @FXML private CheckBox chkIncludeLinkFileTest;
     @FXML private TableView<FMLinkFiles> tblLinkFileTest;
     @FXML private TableColumn<FMLinkFiles, String> clmMaster;
@@ -65,6 +66,7 @@ public class FileManagementController  {
         initLinkFilesTable();
         loadLinkFilesData();
 
+        LinkFilesSimbiosCtdCheckbox.setSelected(root.getRunSettings().getFileManagement().isLinkFilesSimbiosCtd_bool());
         chkIncludeLinkFileTest.setSelected(root.getRunSettings().getFileManagement().isIncludeLinkFilesTest());
         handleIncludeLinkFileCheck();
 
@@ -253,6 +255,14 @@ public class FileManagementController  {
     }
 
     @FXML private void handleIncludeLinkFileCheck() { root.getMenuLinkFile().setDisable(!chkIncludeLinkFileTest.isSelected()); }
+
+    @FXML private void HandleLinkFilesSimbiosCtd() {
+        RuwiSimbiosCtdCheckbox.setSelected(LinkFilesSimbiosCtdCheckbox.isSelected());
+    }
+
+    @FXML private void HandleRuwiSimbiosCtd() {
+        LinkFilesSimbiosCtdCheckbox.setSelected(RuwiSimbiosCtdCheckbox.isSelected());
+    }
 
     private void initRuwiTable() {
         tblRuwi.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -459,7 +469,7 @@ public class FileManagementController  {
         SFI_PSLOCI_6F73_0C_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_PSLOCI_6F73_0C_bool());
         SFI_FPLMN_6F7B_0D_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_FPLMN_6F7B_0D_bool());
         SFI_CBMID_6F48_0E_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_CBMID_6F48_0E_bool());
-        SFI_Kc_4F20_01_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_Kc_4F20_01_bool());
+        //SFI_Kc_4F20_01_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_Kc_4F20_01_bool());
         SFI_ARR_2F06_06_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_ARR_2F06_06_bool());
         SFI_Dir_2F00_1E_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_Dir_2F00_1E_bool());
         SFI_StartHFN_6F5B_0F_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_StartHFN_6F5B_0F_bool());
@@ -476,12 +486,13 @@ public class FileManagementController  {
         SFI_OPL_6FC6_1A_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_OPL_6FC6_1A_bool());
         SFI_SPDI_6FCD_1B_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_SPDI_6FCD_1B_bool());
         SFI_ACM_6F39_1C_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_ACM_6F39_1C_bool());
-        SFI_KcGPRS_4F52_02_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_KcGPRS_4F52_02_bool());
+        //SFI_KcGPRS_4F52_02_Checkbox.setSelected(root.getRunSettings().getFileManagement().isSFI_KcGPRS_4F52_02_bool());
     }
 
     public void saveControlState() {
         root.getRunSettings().getFileManagement().setIncludeLinkFilesTest(chkIncludeLinkFileTest.isSelected());
         SaveLinkFiledata();
+        root.getRunSettings().getFileManagement().setLinkFilesSimbiosCtd_bool(LinkFilesSimbiosCtdCheckbox.isSelected());
 
         root.getRunSettings().getFileManagement().setIncludeRuwiTest(chkIncludeRuwiTest.isSelected());
         SaveRuwiData();
@@ -948,6 +959,14 @@ public class FileManagementController  {
 
     public void setRuwiSimbiosCtdCheckbox(CheckBox ruwiSimbiosCtdCheckbox) {
         RuwiSimbiosCtdCheckbox = ruwiSimbiosCtdCheckbox;
+    }
+
+    public CheckBox getLinkFilesSimbiosCtdCheckbox() {
+        return LinkFilesSimbiosCtdCheckbox;
+    }
+
+    public void setLinkFilesSimbiosCtdCheckbox(CheckBox linkFilesSimbiosCtdCheckbox) {
+        LinkFilesSimbiosCtdCheckbox = linkFilesSimbiosCtdCheckbox;
     }
 
     public ObservableList<FMRuwi> getRuwiTableData() {
