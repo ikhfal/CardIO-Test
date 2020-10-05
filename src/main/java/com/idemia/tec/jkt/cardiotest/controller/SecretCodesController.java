@@ -38,6 +38,11 @@ public class SecretCodesController {
     @FXML private TextField txtPuk2Retries;
     @FXML private CheckBox chkBlockPuk1;
     @FXML private CheckBox chkBlockPuk2;
+
+    @FXML private CheckBox chkBlockIsc2;
+    @FXML private CheckBox chkBlockIsc3;
+    @FXML private CheckBox chkBlockIsc4;
+
     @FXML private Label lblIsc2;
     @FXML private Label lblIsc3;
     @FXML private Label lblIsc4;
@@ -116,6 +121,10 @@ public class SecretCodesController {
         chkBlockPuk1.setSelected(root.getRunSettings().getSecretCodes().isBlockPuk1());
         chkBlockPuk2.setSelected(root.getRunSettings().getSecretCodes().isBlockPuk2());
 
+        chkBlockIsc2.setSelected(root.getRunSettings().getSecretCodes().isBlockIsc2());
+        chkBlockIsc3.setSelected(root.getRunSettings().getSecretCodes().isBlockIsc3());
+        chkBlockIsc4.setSelected(root.getRunSettings().getSecretCodes().isBlockIsc4());
+
         if (root.getRunSettings().getSecretCodes().getIsc1() != null)
             cmbIsc1.getSelectionModel().select(root.getRunSettings().getSecretCodes().getIsc1());
         if (root.getRunSettings().getSecretCodes().getIsc1Retries() != 0)
@@ -165,11 +174,13 @@ public class SecretCodesController {
             cmbIsc2.setDisable(false);
             lblIsc2Retries.setDisable(false);
             txtIsc2Retries.setDisable(false);
+            chkBlockIsc2.setDisable(false);
         } else {
             lblIsc2.setDisable(true);
             cmbIsc2.setDisable(true);
             lblIsc2Retries.setDisable(true);
             txtIsc2Retries.setDisable(true);
+            chkBlockIsc2.setDisable(true);
         }
     }
 
@@ -179,11 +190,13 @@ public class SecretCodesController {
             cmbIsc3.setDisable(false);
             lblIsc3Retries.setDisable(false);
             txtIsc3Retries.setDisable(false);
+            chkBlockIsc3.setDisable(false);
         } else {
             lblIsc3.setDisable(true);
             cmbIsc3.setDisable(true);
             lblIsc3Retries.setDisable(true);
             txtIsc3Retries.setDisable(true);
+            chkBlockIsc3.setDisable(true);
         }
     }
 
@@ -193,11 +206,13 @@ public class SecretCodesController {
             cmbIsc4.setDisable(false);
             lblIsc4Retries.setDisable(false);
             txtIsc4Retries.setDisable(false);
+            chkBlockIsc4.setDisable(false);
         } else {
             lblIsc4.setDisable(true);
             cmbIsc4.setDisable(true);
             lblIsc4Retries.setDisable(true);
             txtIsc4Retries.setDisable(true);
+            chkBlockIsc4.setDisable(true);
         }
     }
 
@@ -240,6 +255,10 @@ public class SecretCodesController {
         root.getRunSettings().getSecretCodes().setBlockLpuk(chkBlockLpuk.isSelected());
         root.getRunSettings().getSecretCodes().setBlockPuk1(chkBlockPuk1.isSelected());
         root.getRunSettings().getSecretCodes().setBlockPuk2(chkBlockPuk2.isSelected());
+
+        root.getRunSettings().getSecretCodes().setBlockIsc2(chkBlockIsc2.isSelected());
+        root.getRunSettings().getSecretCodes().setBlockIsc3(chkBlockIsc3.isSelected());
+        root.getRunSettings().getSecretCodes().setBlockIsc4(chkBlockIsc4.isSelected());
     }
 
 }

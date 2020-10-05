@@ -970,8 +970,8 @@ public class FileManagementService {
             else
             {
                 routine.append(
-                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
+                        "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (9FXX)\n"
+                                + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (9FXX)\n"
                 );
             }
 
@@ -1013,9 +1013,9 @@ public class FileManagementService {
             else
             {
                 routine.append(
-                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n\n"
+                        "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (9FXX)\n"
+                                + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (9FXX)\n"
+                                + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (9FXX)\n\n"
                 );
             }
 
@@ -1061,10 +1061,10 @@ public class FileManagementService {
             else
             {
                 routine.append(
-                        "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (61xx)\n"
-                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (61xx)\n"
-                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (61xx)\n"
-                                + "00A4000402 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(12,16) + " (61xx)\n"
+                        "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(0,4) + " (9FXX)\n"
+                                + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(4,8) + " (9FXX)\n"
+                                + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(8,12) + " (9FXX)\n"
+                                + "A0A4000002 " + root.getRunSettings().getFileManagement().getData_ruwi(j).substring(12,16) + " (9FXX)\n"
                 );
             }
 

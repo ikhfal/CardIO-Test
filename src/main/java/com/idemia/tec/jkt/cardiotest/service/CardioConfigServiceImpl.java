@@ -57,7 +57,7 @@ public class CardioConfigServiceImpl implements CardioConfigService {
             defaultSettings.setVariableMappings(new ArrayList<>());
 
             defaultSettings.setAtr(new ATR(true, "", "", ""));
-            defaultSettings.setSecretCodes(new SecretCodes(true, true, true, false, false, false, false, false));
+            defaultSettings.setSecretCodes(new SecretCodes(true, true, true, false, false, false, false, false,false,false,false));
             defaultSettings.getSecretCodes().setUseIsc2(false);
             defaultSettings.getSecretCodes().setUseIsc3(false);
             defaultSettings.getSecretCodes().setUseIsc4(false);

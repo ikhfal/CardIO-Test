@@ -43,6 +43,10 @@ public class SecretCodes {
     private boolean blockPuk1;
     private boolean blockPuk2;
 
+    private boolean blockIsc2;
+    private boolean blockIsc3;
+    private boolean blockIsc4;
+
     private boolean testCodes3gOk;
     private String testCodes3gMessage;
     private boolean testCodes2gOk;
@@ -51,7 +55,7 @@ public class SecretCodes {
     public SecretCodes() {}
 
     public SecretCodes(boolean include3gScript, boolean include2gScript, boolean pin1disabled, boolean pin2disabled,
-                       boolean blockGpuk, boolean blockLpuk, boolean blockPuk1, boolean blockPuk2) {
+                       boolean blockGpuk, boolean blockLpuk, boolean blockPuk1, boolean blockPuk2, boolean blockIsc2, boolean blockIsc3, boolean blockIsc4) {
         this.include3gScript = include3gScript;
         this.include2gScript = include2gScript;
         this.pin1disabled = pin1disabled;
@@ -60,6 +64,10 @@ public class SecretCodes {
         this.blockLpuk = blockLpuk;
         this.blockPuk1 = blockPuk1;
         this.blockPuk2 = blockPuk2;
+
+        this.blockIsc2 = blockIsc2;
+        this.blockIsc3 = blockIsc3;
+        this.blockIsc4 = blockIsc4;
     }
 
     public SecretCodes(boolean include3gScript, boolean include2gScript, String gpin, String lpin, String gpuk, String lpuk, int gpinRetries, int lpinRetries, int gpukRetries, int lpukRetries, String chv1, String chv2, String puk1, String puk2, int chv1Retries, int chv2Retries, int puk1Retries, int puk2Retries, boolean pin1disabled, boolean pin2disabled, String isc1, String isc2, String isc3, String isc4, int isc1Retries, int isc2Retries, int isc3Retries, int isc4Retries, boolean useIsc2, boolean useIsc3, boolean useIsc4, boolean blockGpuk, boolean blockLpuk, boolean blockPuk1, boolean blockPuk2) {
@@ -378,6 +386,31 @@ public class SecretCodes {
 
     public void setBlockPuk2(boolean blockPuk2) {
         this.blockPuk2 = blockPuk2;
+    }
+
+
+    public boolean isBlockIsc2() {
+        return blockIsc2;
+    }
+
+    public void setBlockIsc2(boolean blockIsc2) {
+        this.blockIsc2 = blockIsc2;
+    }
+
+    public boolean isBlockIsc3() {
+        return blockIsc3;
+    }
+
+    public void setBlockIsc3(boolean blockIsc3) {
+        this.blockIsc3 = blockIsc3;
+    }
+
+    public boolean isBlockIsc4() {
+        return blockIsc4;
+    }
+
+    public void setBlockIsc4(boolean blockIsc4) {
+        this.blockIsc4 = blockIsc4;
     }
 
     public boolean isTestCodes3gOk() {

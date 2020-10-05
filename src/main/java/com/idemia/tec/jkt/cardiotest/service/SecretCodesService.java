@@ -93,21 +93,31 @@ public class SecretCodesService {
             + "A0 20 00 00 08 %" + secretCodes.getIsc1() + " (9000)\n\n"
         );
         if (secretCodes.isUseIsc2()) {
+
             codes2gBuffer.append(
                 "; ADM2\n"
                 + "; verify ADM2\n"
+                + "A0 20 00 05 08 %" + secretCodes.getIsc2() + " (9000)\n");
+
+            if (secretCodes.isBlockIsc2())
+            {
+                codes2gBuffer.append(
+                 "; block ADM2 and verify\n"
+                + "; try verifying with false code " + secretCodes.getIsc2Retries() + " times\n"
+            );
+            for (int i = 0; i < secretCodes.getIsc2Retries(); i++)
+                codes2gBuffer.append("A0 20 00 05 08 FFFFFFFFFFFFFFFF (98XX) ; try: " + (i + 1) + "\n");
+            codes2gBuffer.append(
+                "A0 20 00 05 08 %" + secretCodes.getIsc2() + " (9840) ; verification failed\n"
+                + "; unblock ADM2 using ADM1 and verify\n"
+                + "A0 2C 00 05 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc2() + " (9000)\n"
                 + "A0 20 00 05 08 %" + secretCodes.getIsc2() + " (9000)\n"
-//                + "; block ADM2 and verify\n"
-//                + "; try verifying with false code " + secretCodes.getIsc2Retries() + " times\n"
-//            );
-//            for (int i = 0; i < secretCodes.getIsc2Retries(); i++)
-//                codes2gBuffer.append("A0 20 00 05 08 FFFFFFFFFFFFFFFF (98XX) ; try: " + (i + 1) + "\n");
-//            codes2gBuffer.append(
-//                "A0 20 00 05 08 %" + secretCodes.getIsc2() + " (9840) ; verification failed\n"
-//                + "; unblock ADM2 using ADM1 and verify\n"
-//                + "A0 2C 00 05 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc2() + " (9000)\n"
-//                + "A0 20 00 05 08 %" + secretCodes.getIsc2() + " (9000)\n"
-                + "; change ADM2 and verify\n"
+            );
+            }
+
+
+            codes2gBuffer.append(
+                 "; change ADM2 and verify\n"
                 + "A0 24 00 05 10 %" + secretCodes.getIsc2() + " %" + secretCodes.getIsc1() + " (9000)\n"
                 + "A0 20 00 05 08 %" + secretCodes.getIsc1() + " (9000)\n"
                 + "; restore initial ADM2 and verify\n"
@@ -119,18 +129,27 @@ public class SecretCodesService {
             codes2gBuffer.append(
                 "; ADM3\n"
                 + "; verify ADM3\n"
-                + "A0 20 00 06 08 %" + secretCodes.getIsc3() + " (9000)\n"
-//                + "; block ADM3 and verify\n"
-//                + "; try verifying with false code " + secretCodes.getIsc3Retries() + " times\n"
-//            );
-//            for (int i = 0; i < secretCodes.getIsc3Retries(); i++)
-//                codes2gBuffer.append("A0 20 00 06 08 FFFFFFFFFFFFFFFF (98XX) ; try: " + (i + 1) + "\n");
-//            codes2gBuffer.append(
-//                "A0 20 00 06 08 %" + secretCodes.getIsc3() + " (9840) ; verification failed\n"
-//                + "; unblock ADM3 using ADM1 and verify\n"
-//                + "A0 2C 00 06 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc3() + " (9000)\n"
-//                + "A0 20 00 06 08 %" + secretCodes.getIsc3() + " (9000)\n"
-                + "; change ADM3 and verify\n"
+                + "A0 20 00 06 08 %" + secretCodes.getIsc3() + " (9000)\n");
+
+            if (secretCodes.isBlockIsc3())
+            {
+            codes2gBuffer.append(
+                "; block ADM3 and verify\n"
+                + "; try verifying with false code " + secretCodes.getIsc3Retries() + " times\n"
+            );
+
+            for (int i = 0; i < secretCodes.getIsc3Retries(); i++)
+                codes2gBuffer.append("A0 20 00 06 08 FFFFFFFFFFFFFFFF (98XX) ; try: " + (i + 1) + "\n");
+            codes2gBuffer.append(
+                "A0 20 00 06 08 %" + secretCodes.getIsc3() + " (9840) ; verification failed\n"
+                + "; unblock ADM3 using ADM1 and verify\n"
+                + "A0 2C 00 06 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc3() + " (9000)\n"
+                + "A0 20 00 06 08 %" + secretCodes.getIsc3() + " (9000)\n" );
+            }
+
+
+            codes2gBuffer.append(
+                "; change ADM3 and verify\n"
                 + "A0 24 00 06 10 %" + secretCodes.getIsc3() + " %" + secretCodes.getIsc1() + " (9000)\n"
                 + "A0 20 00 06 08 %" + secretCodes.getIsc1() + " (9000)\n"
                 + "; restore initial ADM3 and verify\n"
@@ -142,18 +161,24 @@ public class SecretCodesService {
             codes2gBuffer.append(
                 "; ADM4\n"
                 + "; verify ADM4\n"
-                + "A0 20 00 07 08 %" + secretCodes.getIsc4() + " (9000)\n"
-//                + "; block ADM4 and verify\n"
-//                + "; try verifying with false code " + secretCodes.getIsc4Retries() + " times\n"
-//            );
-//            for (int i = 0; i < secretCodes.getIsc4Retries(); i++)
-//                codes2gBuffer.append("A0 20 00 07 08 FFFFFFFFFFFFFFFF (98XX) ; try: " + (i + 1) + "\n");
-//            codes2gBuffer.append(
-//                "A0 20 00 07 08 %" + secretCodes.getIsc4() + " (9840) ; verification failed\n"
-//                + "; unblock ADM4 using ADM1 and verify\n"
-//                + "A0 2C 00 07 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc4() + " (9000)\n"
-//                + "A0 20 00 07 08 %" + secretCodes.getIsc4() + " (9000)\n"
-                + "; change ADM4 and verify\n"
+                + "A0 20 00 07 08 %" + secretCodes.getIsc4() + " (9000)\n");
+
+            if (secretCodes.isBlockIsc4()) {
+            codes2gBuffer.append(
+                "; block ADM4 and verify\n"
+                + "; try verifying with false code " + secretCodes.getIsc4Retries() + " times\n"
+            );
+            for (int i = 0; i < secretCodes.getIsc4Retries(); i++)
+                codes2gBuffer.append("A0 20 00 07 08 FFFFFFFFFFFFFFFF (98XX) ; try: " + (i + 1) + "\n");
+            codes2gBuffer.append(
+                "A0 20 00 07 08 %" + secretCodes.getIsc4() + " (9840) ; verification failed\n"
+                + "; unblock ADM4 using ADM1 and verify\n"
+                + "A0 2C 00 07 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc4() + " (9000)\n"
+                + "A0 20 00 07 08 %" + secretCodes.getIsc4() + " (9000)\n");
+            }
+
+            codes2gBuffer.append(
+                "; change ADM4 and verify\n"
                 + "A0 24 00 07 10 %" + secretCodes.getIsc4() + " %" + secretCodes.getIsc1() + " (9000)\n"
                 + "A0 20 00 07 08 %" + secretCodes.getIsc1() + " (9000)\n"
                 + "; restore initial ADM4 and verify\n"
@@ -295,6 +320,7 @@ public class SecretCodesService {
             + "00 24 00 0A 10 0123456789ABCDEF %" + secretCodes.getIsc1() + " (9000)\n"
             + "00 20 00 0A 08 %" + secretCodes.getIsc1() + " (9000)\n\n"
         );
+
         if (secretCodes.isUseIsc2()) {
             codes3gBuffer.append(
                 "; Issuer Security Code 2\n"
@@ -302,18 +328,26 @@ public class SecretCodesService {
                 + "00 A4 04 0C <?> %USIM_AID (9000)\n"
                 + "00 20 00 0B 00 (63CX) ; remaining attempts for ADM2\n"
                 + "; verify ADM2\n"
-                + "00 20 00 0B 08 %" + secretCodes.getIsc2() + " (9000)\n"
-//                + "; block ADM2 and verify\n"
-//                + "; try verifying with false code " + secretCodes.getIsc2Retries() + " times\n"
-//            );
-//            for (int i = 0; i < secretCodes.getIsc2Retries(); i++)
-//                codes3gBuffer.append("00 20 00 0B 08 FFFFFFFFFFFFFFFF (63XX) ; try: " + (i + 1) + "\n");
-//            codes3gBuffer.append(
-//                "00 20 00 0B 08 %" + secretCodes.getIsc2() + " (6983) ; verification failed\n"
-//                + "; unblock ADM2 using ADM1 and verify\n"
-//                + "00 2C 00 0B 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc2() + " (9000)\n"
-//                + "00 20 00 0B 08 %" + secretCodes.getIsc2() + " (9000)\n"
-                + "; change ADM2 and verify new value\n"
+                + "00 20 00 0B 08 %" + secretCodes.getIsc2() + " (9000)\n");
+
+            if (secretCodes.isBlockIsc2())
+            {
+            codes3gBuffer.append(
+                "; block ADM2 and verify\n"
+                + "; try verifying with false code " + secretCodes.getIsc2Retries() + " times\n"
+            );
+
+            for (int i = 0; i < secretCodes.getIsc2Retries(); i++)
+                codes3gBuffer.append("00 20 00 0B 08 FFFFFFFFFFFFFFFF (63XX) ; try: " + (i + 1) + "\n");
+            codes3gBuffer.append(
+                "00 20 00 0B 08 %" + secretCodes.getIsc2() + " (6983) ; verification failed\n"
+                + "; unblock ADM2 using ADM1 and verify\n"
+                + "00 2C 00 0B 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc2() + " (9000)\n"
+                + "00 20 00 0B 08 %" + secretCodes.getIsc2() + " (9000)\n");
+            }
+
+            codes3gBuffer.append(
+                "; change ADM2 and verify new value\n"
                 + "00 24 00 0B 10 %" + secretCodes.getIsc2() + " %" + secretCodes.getIsc1() + " (9000)\n"
                 + "00 20 00 0B 08 %" + secretCodes.getIsc1() + " (9000)\n"
                 + "; restore initial ADM2 and verify\n"
@@ -321,6 +355,7 @@ public class SecretCodesService {
                 + "00 20 00 0B 08 %" + secretCodes.getIsc2() + " (9000)\n\n"
             );
         }
+
         if (secretCodes.isUseIsc3()) {
             codes3gBuffer.append(
                 "; Issuer Security Code 3\n"
@@ -328,18 +363,25 @@ public class SecretCodesService {
                 + "00 A4 04 0C <?> %USIM_AID (9000)\n"
                 + "00 20 00 0C 00 (63CX) ; remaining attempts for ADM3\n"
                 + "; verify ADM3\n"
-                + "00 20 00 0C 08 %" + secretCodes.getIsc3() + " (9000)\n"
-//                + "; block ADM3 and verify\n"
-//                + "; try verifying with false code " + secretCodes.getIsc3Retries() + " times\n"
-//            );
-//            for (int i = 0; i < secretCodes.getIsc3Retries(); i++)
-//                codes3gBuffer.append("00 20 00 0C 08 FFFFFFFFFFFFFFFF (63XX) ; try: " + (i + 1) + "\n");
-//            codes3gBuffer.append(
-//                "00 20 00 0C 08 %" + secretCodes.getIsc3() + " (6983) ; verification failed\n"
-//                + "; unblock ADM3 using ADM1 and verify\n"
-//                + "00 2C 00 0C 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc3() + " (9000)\n"
-//                + "00 20 00 0C 08 %" + secretCodes.getIsc3() + " (9000)\n"
-                + "; change ADM3 and verify new value\n"
+                + "00 20 00 0C 08 %" + secretCodes.getIsc3() + " (9000)\n");
+
+            if (secretCodes.isBlockIsc3())
+            {
+            codes3gBuffer.append(
+                "; block ADM3 and verify\n"
+                + "; try verifying with false code " + secretCodes.getIsc3Retries() + " times\n"
+            );
+            for (int i = 0; i < secretCodes.getIsc3Retries(); i++)
+                codes3gBuffer.append("00 20 00 0C 08 FFFFFFFFFFFFFFFF (63XX) ; try: " + (i + 1) + "\n");
+            codes3gBuffer.append(
+                "00 20 00 0C 08 %" + secretCodes.getIsc3() + " (6983) ; verification failed\n"
+                + "; unblock ADM3 using ADM1 and verify\n"
+                + "00 2C 00 0C 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc3() + " (9000)\n"
+                + "00 20 00 0C 08 %" + secretCodes.getIsc3() + " (9000)\n");
+            }
+
+            codes3gBuffer.append(
+                "; change ADM3 and verify new value\n"
                 + "00 24 00 0C 10 %" + secretCodes.getIsc3() + " %" + secretCodes.getIsc1() + " (9000)\n"
                 + "00 20 00 0C 08 %" + secretCodes.getIsc1() + " (9000)\n"
                 + "; restore initial ADM3 and verify\n"
@@ -347,6 +389,7 @@ public class SecretCodesService {
                 + "00 20 00 0C 08 %" + secretCodes.getIsc3() + " (9000)\n\n"
             );
         }
+
         if (secretCodes.isUseIsc4()) {
             codes3gBuffer.append(
                 "; Issuer Security Code 4\n"
@@ -354,18 +397,25 @@ public class SecretCodesService {
                 + "00 A4 04 0C <?> %USIM_AID (9000)\n"
                 + "00 20 00 0D 00 (63CX) ; remaining attempts for ADM4\n"
                 + "; verify ADM4\n"
-                + "00 20 00 0D 08 %" + secretCodes.getIsc4() + " (9000)\n"
-//                + "; block ADM4 and verify\n"
-//                + "; try verifying with false code " + secretCodes.getIsc4Retries() + " times\n"
-//            );
-//            for (int i = 0; i < secretCodes.getIsc4Retries(); i++)
-//                codes3gBuffer.append("00 20 00 0D 08 FFFFFFFFFFFFFFFF (63XX) ; try: " + (i + 1) + "\n");
-//            codes3gBuffer.append(
-//                "00 20 00 0D 08 %" + secretCodes.getIsc4() + " (6983) ; verification failed\n"
-//                + "; unblock ADM4 using ADM1 and verify\n"
-//                + "00 2C 00 0D 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc4() + " (9000)\n"
-//                + "00 20 00 0D 08 %" + secretCodes.getIsc4() + " (9000)\n"
-                + "; change ADM4 and verify new value\n"
+                + "00 20 00 0D 08 %" + secretCodes.getIsc4() + " (9000)\n");
+
+            if (secretCodes.isBlockIsc4())
+            {
+            codes3gBuffer.append(
+                "; block ADM4 and verify\n"
+                + "; try verifying with false code " + secretCodes.getIsc4Retries() + " times\n"
+            );
+            for (int i = 0; i < secretCodes.getIsc4Retries(); i++)
+                codes3gBuffer.append("00 20 00 0D 08 FFFFFFFFFFFFFFFF (63XX) ; try: " + (i + 1) + "\n");
+            codes3gBuffer.append(
+                "00 20 00 0D 08 %" + secretCodes.getIsc4() + " (6983) ; verification failed\n"
+                + "; unblock ADM4 using ADM1 and verify\n"
+                + "00 2C 00 0D 10 %" + secretCodes.getIsc1() + " %" + secretCodes.getIsc4() + " (9000)\n"
+                + "00 20 00 0D 08 %" + secretCodes.getIsc4() + " (9000)\n");
+            }
+
+            codes3gBuffer.append(
+                "; change ADM4 and verify new value\n"
                 + "00 24 00 0D 10 %" + secretCodes.getIsc4() + " %" + secretCodes.getIsc1() + " (9000)\n"
                 + "00 20 00 0D 08 %" + secretCodes.getIsc1() + " (9000)\n"
                 + "; restore initial ADM4 and verify\n"

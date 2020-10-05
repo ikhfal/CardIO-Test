@@ -551,7 +551,7 @@ public class RunServiceImpl implements RunService {
                 bw.append(scriptGenerator.generateSecretCodes3g(secretCodes));
             }
             catch (IOException e) { logger.error("Failed writing SecretCodes_3G script"); }
-            secretCodesRunAll.append(".EXECUTE scripts\\SecretCodes_3G.txt /PATH logs\n");
+            secretCodesRunAll.append(".EXECUTE scripts\\SecretCod-es_3G.txt /PATH logs\n");
             secretCodesRunAll.append(".ALLUNDEFINE\n\n");
         }
 
